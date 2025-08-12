@@ -34,10 +34,11 @@ public class CharacterControls : MonoBehaviour
     [Header("Climbing Settings")]
     [SerializeField]
     private bool isClimbing;
+    [SerializeField]
     private bool CanClimb;
     public int ClimbDistance;
     public Transform ClimbChecker2;
-
+    public int ClimbSpeed;
 
     private void OnEnable()
     {
@@ -58,11 +59,15 @@ public class CharacterControls : MonoBehaviour
 
     private void Update()
     {
-        if(!isClimbing && !CanClimb)
+        if (isClimbing && !CanClimb)
         {
             ApplyGravity();
         }
         else if (!isClimbing && CanClimb)
+        {
+            ApplyGravity();
+        }
+        else if (!isClimbing && !CanClimb)
         {
             ApplyGravity();
         }
@@ -150,8 +155,20 @@ public class CharacterControls : MonoBehaviour
         }
         else if (isClimbing && CanClimb)
         {
-            velocity.y = Mathf.Sqrt(JumpHeight * -2f * gravity);
+            StartCoroutine(ClimbJump());
         }
+        else if (isClimbing && !CanClimb)
+        {
+            StartCoroutine(ClimbJump());
+        }
+    }
+
+    IEnumerator ClimbJump()
+    {
+        ClimbSpeed += 8;
+        yield return new WaitForSeconds(0.3f);
+        ClimbSpeed -= 8;
+
     }
 
     void Move()
@@ -162,7 +179,7 @@ public class CharacterControls : MonoBehaviour
 
             move = transform.TransformDirection(move);
 
-            characterController.Move(move * moveSpeed * Time.deltaTime);
+            characterController.Move(move * ClimbSpeed * Time.deltaTime);
         }
         else if (!isClimbing)
         {
