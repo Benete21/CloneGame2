@@ -5,15 +5,19 @@ using UnityEngine;
 
 public class Level_Obstacles : MonoBehaviour
 {
-    public GameObject rockPrefab; // Assign your rock Prefab in the Inspector
-    public float spawnIntervalMin; // Minimum time between spawns
-    public float spawnIntervalMax; // Maximum time between spawns
-    public List<Vector3> SpawnPoints = new List<Vector3>();
-
+    public GameObject rockPrefab; // Assign your rock Prefab
+    public GameObject birdPrefab;   //Assign your bird Prefab
+    public float spawnIntervalMinRock; // Minimum time between spawns for rocks
+    public float spawnIntervalMaxRock; // Maximum time between spawns for rocks
+    public float spawnIntervalMinBird;  // Minimum time between spawns for bird
+    public float spawnIntervalMaxBird;  // Maximum time between spawns for bird
+    public List<Vector3> SpawnPointsRock = new List<Vector3>();
+    public List<Vector3> SpawnPointsBird = new List<Vector3>();
 
     void Start()
     {
         StartCoroutine(SpawnRocksCoroutine());
+        StartCoroutine(SpawnBirdCoroutine());
     }
 
     IEnumerator SpawnRocksCoroutine()
@@ -21,15 +25,30 @@ public class Level_Obstacles : MonoBehaviour
         while (true)
         {
             // Randomize spawn time
-            float randomTime = Random.Range(spawnIntervalMin, spawnIntervalMax);
+            float randomTime = Random.Range(spawnIntervalMinRock, spawnIntervalMaxRock);
             yield return new WaitForSeconds(randomTime);
 
             // Randomize X position
-            foreach (Vector3 i in SpawnPoints)
+            foreach (Vector3 i in SpawnPointsRock)
             {
                 Instantiate(rockPrefab, i, Quaternion.identity);
             }
         }
 
+    }
+    IEnumerator SpawnBirdCoroutine()
+    {
+        while (true)
+        {
+            // Randomize spawn time
+            float randomTime = Random.Range(spawnIntervalMinBird, spawnIntervalMaxBird);
+            yield return new WaitForSeconds(randomTime);
+
+            // Randomize X position
+            foreach (Vector3 i in SpawnPointsBird)
+            {
+                Instantiate(birdPrefab, i, Quaternion.identity);
+            }
+        }
     }
 }

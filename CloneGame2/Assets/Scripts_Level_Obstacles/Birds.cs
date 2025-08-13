@@ -7,10 +7,12 @@ public class Birds : MonoBehaviour
     public float moveSpeed = 2f; // Speed of movement
     public float moveDistance = 5f; // How far up and down it moves
     private Vector3 startPosition;
+    public GameObject birdPrefab;
 
     void Start()
     {
         startPosition = transform.position; // Store the initial position
+        Destroy(birdPrefab, 5);
     }
 
     void Update()
