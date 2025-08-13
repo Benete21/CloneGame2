@@ -28,9 +28,6 @@ public class CharacterControls : MonoBehaviour
     private float verticalLookRotation = 0f;
 
 
-    //Interaction 
-    public LayerMask InteractLayer;
-
     [Header("Climbing Settings")]
     [SerializeField]
     private bool isClimbing;
@@ -39,6 +36,10 @@ public class CharacterControls : MonoBehaviour
     public int ClimbDistance;
     public Transform ClimbChecker2;
     public int ClimbSpeed;
+    public Transform Crosshair;
+    private StatManager statManagerScript;
+
+
 
     private void OnEnable()
     {
@@ -57,25 +58,64 @@ public class CharacterControls : MonoBehaviour
 
     }
 
+
+    private void Start()
+    {
+        statManagerScript = GetComponent<StatManager>();
+    }
     private void Update()
     {
         if (isClimbing && !CanClimb)
         {
             ApplyGravity();
+            statManagerScript.IsClimbing = false;
         }
         else if (!isClimbing && CanClimb)
         {
             ApplyGravity();
+            statManagerScript.IsClimbing = false;
         }
         else if (!isClimbing && !CanClimb)
         {
             ApplyGravity();
+            statManagerScript.IsClimbing = false;
+        }
+        else if (CanClimb && isClimbing)
+        {
+            if (statManagerScript.IsClimbingAndMoving == false)
+            {
+                statManagerScript.IsClimbing = true;
+            }
+            else
+            {
+                statManagerScript.IsClimbing = true;
+            }
         }
 
         Move();
         LookAround();
-        ClimbCheck();    
+        ClimbCheck();
+
+        //Vector3 mousePosition = Input.mousePosition;
+        //Crosshair.position = new Vector3(mousePosition.x,  mousePosition.y, Crosshair.position.z);
+
+
+
+        if (moveInput.x == 0 || moveInput.y == 0)
+        {
+            statManagerScript.IsClimbingAndMoving = false;
+        }
+        if (moveInput.x ==1  || moveInput.y == 1)
+        {
+            if(isClimbing && CanClimb)
+            {
+                statManagerScript.IsClimbingAndMoving = true;
+
+            }
+        }
+
     }
+
 
     private void Awake()
     {
@@ -125,6 +165,7 @@ public class CharacterControls : MonoBehaviour
     void Climb()
     {
         CanClimb = true;
+
     }
 
     void CancelClimb()
@@ -133,13 +174,7 @@ public class CharacterControls : MonoBehaviour
     }
     void Interact()
     {
-        Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-        RaycastHit hit;
-
-
-        /*if (Physics.Raycast(ray, out hit, PickupRange, InteractLayer))
-        {
-        }*/
+       
     }
 
     void Jump()
@@ -166,6 +201,7 @@ public class CharacterControls : MonoBehaviour
     IEnumerator ClimbJump()
     {
         ClimbSpeed += 8;
+        statManagerScript.LeapStaminaDepletion();
         yield return new WaitForSeconds(0.3f);
         ClimbSpeed -= 8;
 
@@ -180,14 +216,16 @@ public class CharacterControls : MonoBehaviour
             move = transform.TransformDirection(move);
 
             characterController.Move(move * ClimbSpeed * Time.deltaTime);
+
         }
         else if (!isClimbing)
         {
-            Vector3 move = new Vector3(moveInput.x, 0,moveInput.y);
+            Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
 
             move = transform.TransformDirection(move);
 
             characterController.Move(move * moveSpeed * Time.deltaTime);
+
         }
     }
 
