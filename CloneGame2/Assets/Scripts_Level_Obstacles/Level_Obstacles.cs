@@ -14,12 +14,22 @@ public class Level_Obstacles : MonoBehaviour
     public List<Vector3> SpawnPointsRock = new List<Vector3>();
     public List<Vector3> SpawnPointsBird = new List<Vector3>();
 
+    public GameObject player;
+
     void Start()
     {
-        StartCoroutine(SpawnRocksCoroutine());
-        StartCoroutine(SpawnBirdCoroutine());
+       /* StartCoroutine(SpawnRocksCoroutine());
+        StartCoroutine(SpawnBirdCoroutine());*/
     }
-
+    public void OnTriggerEnter(Collider other)
+    {
+        player = other.gameObject;
+        if (player.CompareTag ("Obstacle1"))
+        {
+            StartCoroutine(SpawnRocksCoroutine());
+            StartCoroutine(SpawnBirdCoroutine());
+        }
+    }
     IEnumerator SpawnRocksCoroutine()
     {
         while (true)
