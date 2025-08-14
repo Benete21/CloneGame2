@@ -39,8 +39,6 @@ public class CharacterControls : MonoBehaviour
     public Transform Crosshair;
     private StatManager statManagerScript;
 
-    [Header("SlopeSlide MAnager")]
-    CapsuleCollider capsuleCollider;
     private void OnEnable()
     {
         controls = new Controls();
@@ -62,7 +60,6 @@ public class CharacterControls : MonoBehaviour
     private void Start()
     {
         statManagerScript = GetComponent<StatManager>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
     }
     private void Update()
     {
@@ -108,17 +105,13 @@ public class CharacterControls : MonoBehaviour
         if (moveInput.x == 0 || moveInput.y == 0)
         {
             statManagerScript.IsClimbingAndMoving = false;
-            characterController.enabled = false;
-            capsuleCollider.enabled = true;
         }
         if (moveInput.x ==1  || moveInput.y == 1)
         {
-            characterController.enabled = true;
 
             if (isClimbing && CanClimb)
             {
                 statManagerScript.IsClimbingAndMoving = true;
-                capsuleCollider.enabled = false;
 
             }
         }
