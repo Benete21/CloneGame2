@@ -135,6 +135,16 @@ public class CharacterControls : MonoBehaviour
             if (hit.collider != null)
             {
                 isClimbing = true;
+                if(CanClimb)
+                {
+                    float surfaceNormal = -Vector3.Angle(hit.normal, Vector3.up) + 90;
+                    Debug.Log(surfaceNormal );
+                    transform.eulerAngles = new Vector3(surfaceNormal, transform.rotation.y, transform.rotation.z);
+                }
+            }
+            else
+            {
+                transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
             }
 
         }
@@ -152,6 +162,7 @@ public class CharacterControls : MonoBehaviour
             if (hit2.collider != null)
             {
                 isClimbing = true;
+                
             }
 
         }
