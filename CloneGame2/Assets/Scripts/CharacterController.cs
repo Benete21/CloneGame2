@@ -34,10 +34,13 @@ public class CharacterControls : MonoBehaviour
     [SerializeField]
     private bool CanClimb;
     public float ClimbDistance;
+    public Transform ClimbChecker;
     public Transform ClimbChecker2;
     public int ClimbSpeed;
     public Transform Crosshair;
     private StatManager statManagerScript;
+    private bool InAGap;
+    private bool isLeaping;
 
 
     private void OnEnable()
@@ -86,11 +89,6 @@ public class CharacterControls : MonoBehaviour
         LookAround();
         ClimbCheck();
 
-        //Vector3 mousePosition = Input.mousePosition;
-        //Crosshair.position = new Vector3(mousePosition.x,  mousePosition.y, Crosshair.position.z);
-
-
-
         if (moveInput.x == 0 || moveInput.y == 0)
         {
             statManagerScript.IsClimbingAndMoving = false;
@@ -117,15 +115,21 @@ public class CharacterControls : MonoBehaviour
     public void ClimbCheck()
     {
 
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(ClimbChecker.position, ClimbChecker.forward);
         RaycastHit hit;
 
 
         if (Physics.Raycast(ray, out hit, ClimbDistance))
         {
-            if (hit.collider != null)
+            if(hit.collider.CompareTag("Gap"))
+            {
+                InAGap = true;
+            }
+            else if (!hit.collider.CompareTag("Gap"))
             {
                 isClimbing = true;
+                InAGap = false;
+
             }
 
         }
@@ -196,9 +200,11 @@ public class CharacterControls : MonoBehaviour
     IEnumerator ClimbJump()
     {
         ClimbSpeed += 8;
+        isLeaping = true;
         statManagerScript.LeapStaminaDepletion();
         yield return new WaitForSeconds(0.3f);
         ClimbSpeed -= 8;
+        isLeaping = false;
 
     }
 
@@ -206,11 +212,29 @@ public class CharacterControls : MonoBehaviour
     {
         if (CanClimb)
         {
-            Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
+            if(InAGap)
+            {
+                if (isLeaping)
+                {
+                    Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
 
-            move = transform.TransformDirection(move);
+                    move = transform.TransformDirection(move);
 
-            characterController.Move(move * ClimbSpeed * Time.deltaTime);
+                    characterController.Move(move * ClimbSpeed * Time.deltaTime);
+                }
+                else if (!isLeaping)
+                {
+                    return;
+                }
+            }
+            else if (!InAGap)
+            {
+                Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
+
+                move = transform.TransformDirection(move);
+
+                characterController.Move(move * ClimbSpeed * Time.deltaTime);
+            }
 
         }
         else if (!CanClimb)
