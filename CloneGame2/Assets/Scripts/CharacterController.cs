@@ -27,17 +27,18 @@ public class CharacterControls : MonoBehaviour
     private float lookSpeed;
     private float verticalLookRotation = 0f;
 
-
     [Header("Climbing Settings")]
     [SerializeField]
     private bool isClimbing;
     [SerializeField]
     private bool CanClimb;
-    public int ClimbDistance;
+    public float ClimbDistance;
     public Transform ClimbChecker2;
     public int ClimbSpeed;
     public Transform Crosshair;
     private StatManager statManagerScript;
+    private SlopeSlideManager slopeSlideScript;
+
 
     private void OnEnable()
     {
@@ -60,6 +61,7 @@ public class CharacterControls : MonoBehaviour
     private void Start()
     {
         statManagerScript = GetComponent<StatManager>();
+        slopeSlideScript = GetComponent<SlopeSlideManager>();
     }
     private void Update()
     {
@@ -106,7 +108,7 @@ public class CharacterControls : MonoBehaviour
         {
             statManagerScript.IsClimbingAndMoving = false;
         }
-        if (moveInput.x ==1  || moveInput.y == 1)
+        if (moveInput.x == 1 || moveInput.y == 1)
         {
 
             if (isClimbing && CanClimb)
@@ -137,23 +139,29 @@ public class CharacterControls : MonoBehaviour
             if (hit.collider != null)
             {
                 isClimbing = true;
-                if(CanClimb)
+                float surfaceNormal = -Vector3.Angle(hit.normal, Vector3.up) + 90;
+
+                if (CanClimb)
                 {
-                    float surfaceNormal = -Vector3.Angle(hit.normal, Vector3.up) + 90;
-                    Debug.Log(surfaceNormal );
-                    transform.eulerAngles = new Vector3(surfaceNormal, transform.rotation.y, transform.rotation.z);
+                   transform.eulerAngles = new Vector3(surfaceNormal, 0, 0);
                 }
-            }
-            else
-            {
-                transform.eulerAngles = new Vector3(0, transform.rotation.y, transform.rotation.z);
+                if (surfaceNormal != 0)
+                {
+                    slopeSlideScript.CanSlide = true;
+                }
+                else if (surfaceNormal == 0)
+                {
+                    slopeSlideScript.CanSlide = false;
+                }
+                
             }
 
         }
         else if (hit.collider == null)
         {
-            isClimbing = false;
 
+            isClimbing = false;
+            slopeSlideScript.CanSlide = false;
         }
 
         Ray ray2 = new Ray(ClimbChecker2.position, ClimbChecker2.forward);
@@ -164,7 +172,7 @@ public class CharacterControls : MonoBehaviour
             if (hit2.collider != null)
             {
                 isClimbing = true;
-                
+
             }
 
         }
@@ -177,7 +185,10 @@ public class CharacterControls : MonoBehaviour
     }
     void Climb()
     {
-        CanClimb = true;
+        if (isClimbing)
+        {
+            CanClimb = true;
+        }
 
     }
 
@@ -187,7 +198,7 @@ public class CharacterControls : MonoBehaviour
     }
     void Interact()
     {
-       
+
     }
 
     void Jump()
@@ -260,19 +271,39 @@ public class CharacterControls : MonoBehaviour
 
     public void LookAround()
     {
-        /// Get horizontal and vertical look inputs and adjust based on sensitivity
-        float LookX = lookInput.x * lookSpeed;
-        float LookY = lookInput.y * lookSpeed;
+        if (CanClimb)
+        {
+            Debug.Log("RotateCamera");
+            /// Get horizontal and vertical look inputs and adjust based on sensitivity
+            float LookX = lookInput.x * lookSpeed;
+            float LookY = lookInput.y * lookSpeed;
 
-        // Horizontal rotation: Rotate the player object around the y-axis
-        transform.Rotate(0, LookX, 0);
+            // Horizontal rotation: Rotate the player object around the y-axis
+            playerCamera.Rotate(0, LookX, 0);
 
-        // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
-        verticalLookRotation -= LookY;
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
 
-        // Apply the clamped vertical rotation to the player camera
-        playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+            // Apply the clamped vertical rotation to the player camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+        }
+        else if (!CanClimb)
+        {
+            /// Get horizontal and vertical look inputs and adjust based on sensitivity
+            float LookX = lookInput.x * lookSpeed;
+            float LookY = lookInput.y * lookSpeed;
+
+            // Horizontal rotation: Rotate the player object around the y-axis
+            transform.Rotate(0, LookX, 0);
+
+            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+
+            // Apply the clamped vertical rotation to the player camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+        }
     }
 
 }

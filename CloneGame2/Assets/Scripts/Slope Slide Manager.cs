@@ -1,79 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(CharacterController))]
 public class SlopeSlideManager : MonoBehaviour
 {
-    [Header("Slope Settings")]
-    [SerializeField] private float slopeLimit = 45f;
-    [SerializeField] private float slideAcceleration = 5f;
-    [SerializeField] private float maxSlideSpeed = 10f;
-    [SerializeField] private float gravity = 20f;
-    [SerializeField] private float antiBumpFactor = 4f;
-
-    private CharacterController _controller;
-    private Vector3 _velocity;
-    [SerializeField]private bool _isSliding;
+    [Header("Force Settings")]
+    public float forcePower = 10f;
     public bool CanSlide;
+    private CharacterController _controller;
 
-    void Awake() => _controller = GetComponent<CharacterController>();
-
-    void Update()
+    void Awake()
+    {
+        _controller = GetComponent<CharacterController>();
+    }
+    private void Update()
     {
         if(CanSlide)
         {
-            HandleSlopeSliding();
-            ApplyMovement();
+            AddBackwardForce();
+            forcePower = 0.5f;
+
         }
-    }
-
-    private void HandleSlopeSliding()
-    {
-        
-            if (IsOnSteepSlope(out Vector3 slopeNormal))
-            {
-                _isSliding = true;
-
-                // Calculate slide direction (down the slope)
-                Vector3 slideDirection = new Vector3(slopeNormal.x, -slopeNormal.y, slopeNormal.z);
-                Vector3.OrthoNormalize(ref slopeNormal, ref slideDirection);
-
-                // Accelerate down the slope
-                _velocity += slideDirection * slideAcceleration * Time.deltaTime;
-
-                // Clamp to max slide speed
-                float horizontalSpeed = new Vector3(_velocity.x, 0, _velocity.z).magnitude;
-                if (horizontalSpeed > maxSlideSpeed)
-                {
-                    _velocity = _velocity.normalized * maxSlideSpeed;
-                    _velocity.y = -antiBumpFactor; // Prevent bouncing
-                }
-            }
-            else
-            {
-                _isSliding = false;
-                _velocity.y = -antiBumpFactor; // Small force to stay grounded
-            }
-        
-        
-    }
-
-    private void ApplyMovement() => _controller.Move(_velocity * Time.deltaTime);
-
-    private bool IsOnSteepSlope(out Vector3 slopeNormal)
-    {
-        if (_controller.isGrounded && Physics.Raycast(
-            transform.position + _controller.center,
-            Vector3.down,
-            out RaycastHit hit,
-            _controller.height / 2 + 0.5f))
+        else if(!CanSlide)
         {
-            slopeNormal = hit.normal;
-            float slopeAngle = Vector3.Angle(slopeNormal, Vector3.up);
-            return slopeAngle > _controller.slopeLimit && slopeAngle < 90f;
+            forcePower = 0;
         }
+    }
+    // Call this to apply instant backward force
+    public void AddBackwardForce()
+    {
+        Vector3 force = -transform.forward * forcePower * Time.deltaTime;
+        _controller.Move(force);
+    }
 
-        slopeNormal = Vector3.up;
-        return false;
+    // Call this to apply force in any direction
+    public void AddForce(Vector3 direction, float power)
+    {
+        _controller.Move(direction.normalized * power);
     }
 }
