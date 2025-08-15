@@ -64,24 +64,12 @@ public class CharacterControls : MonoBehaviour
     }
     private void Update()
     {
-        if (isClimbing && !CanClimb)
+        if (!CanClimb)
         {
             ApplyGravity();
             statManagerScript.IsClimbing = false;
         }
-        else if (!isClimbing && CanClimb)
-        {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-
-        }
-        else if (!isClimbing && !CanClimb)
-        {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-
-        }
-        else if (CanClimb && isClimbing)
+        else if (CanClimb)
         {
             if (statManagerScript.IsClimbingAndMoving == false)
             {
@@ -161,7 +149,11 @@ public class CharacterControls : MonoBehaviour
 
         }
 
+        if (!isClimbing)
+        {
+            CanClimb = false;
 
+        }
     }
     void Climb()
     {
@@ -169,7 +161,6 @@ public class CharacterControls : MonoBehaviour
         {
             CanClimb = true;
         }
-
     }
 
     void CancelClimb()
@@ -229,7 +220,6 @@ public class CharacterControls : MonoBehaviour
             move = transform.TransformDirection(move);
 
             characterController.Move(move * moveSpeed * Time.deltaTime);
-
         }
     }
 

@@ -23,7 +23,10 @@ public class StatManager : MonoBehaviour
     {
         depleteStamina();
         StaminaSlider.value = Stamina;
-        GainStamina();
+        if(!IsClimbingAndMoving || !IsClimbing)
+        {
+            GainStamina();
+        }
         HpSlider.value = HP;
         HungerBarSlider.value = Hunger;
     }
