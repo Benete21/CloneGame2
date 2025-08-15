@@ -41,7 +41,7 @@ public class CharacterControls : MonoBehaviour
     private StatManager statManagerScript;
     private bool InAGap;
     private bool isLeaping;
-
+    public Animator LeftHand, RightHand;
 
     private void OnEnable()
     {
@@ -82,6 +82,7 @@ public class CharacterControls : MonoBehaviour
             {
                 statManagerScript.IsClimbing = false;
             }
+
         }
 
 
@@ -150,6 +151,30 @@ public class CharacterControls : MonoBehaviour
         else if (hit.collider == null && hit2.collider == null)
         {
             isClimbing = false;
+            RightHand.SetBool("Idle", true);
+            LeftHand.SetBool("Idle", true);
+
+            RightHand.SetBool("Ledge", false);
+            LeftHand.SetBool("Ledge", false);
+
+            RightHand.SetBool("Climb", false);
+            LeftHand.SetBool("Climb", false);
+
+        }
+
+        if (hit.collider == null && hit2.collider != null)
+        {
+            if(CanClimb)
+            {
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", true);
+                LeftHand.SetBool("Ledge", true);
+
+                RightHand.SetBool("Climb", false);
+                LeftHand.SetBool("Climb", false);
+            }
 
         }
 
@@ -178,7 +203,7 @@ public class CharacterControls : MonoBehaviour
 
     void Jump()
     {
-        if (!isClimbing)
+        if (!CanClimb)
         {
             Ray ray = new Ray(transform.position, Vector3.down);
             RaycastHit hit;
@@ -187,14 +212,11 @@ public class CharacterControls : MonoBehaviour
                 velocity.y = Mathf.Sqrt(JumpHeight * -2f * gravity);
             }
         }
-        else if (isClimbing && CanClimb)
+        else if (CanClimb)
         {
             StartCoroutine(ClimbJump());
         }
-        else if (isClimbing && !CanClimb)
-        {
-            StartCoroutine(ClimbJump());
-        }
+       
     }
 
     IEnumerator ClimbJump()
@@ -221,7 +243,16 @@ public class CharacterControls : MonoBehaviour
                     move = transform.TransformDirection(move);
 
                     characterController.Move(move * ClimbSpeed * Time.deltaTime);
-                }
+                    RightHand.SetBool("Idle", false);
+                    LeftHand.SetBool("Idle", false);
+
+                    RightHand.SetBool("Ledge", false);
+                    LeftHand.SetBool("Ledge", false);
+
+                    RightHand.SetBool("Climb", true);
+                    LeftHand.SetBool("Climb", true);
+                
+            }
                 else if (!isLeaping)
                 {
                     return;
@@ -234,6 +265,15 @@ public class CharacterControls : MonoBehaviour
                 move = transform.TransformDirection(move);
 
                 characterController.Move(move * ClimbSpeed * Time.deltaTime);
+
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", false);
+                LeftHand.SetBool("Ledge", false);
+
+                RightHand.SetBool("Climb", true);
+                LeftHand.SetBool("Climb", true);
             }
 
         }
@@ -244,6 +284,8 @@ public class CharacterControls : MonoBehaviour
             move = transform.TransformDirection(move);
 
             characterController.Move(move * moveSpeed * Time.deltaTime);
+            RightHand.SetBool("Idle", true);
+            LeftHand.SetBool("Idle", true);
         }
     }
 
