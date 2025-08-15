@@ -23,7 +23,7 @@ public class StatManager : MonoBehaviour
     {
         depleteStamina();
         StaminaSlider.value = Stamina;
-        if(!IsClimbingAndMoving || !IsClimbing)
+        if(!IsClimbing && !IsClimbingAndMoving)
         {
             GainStamina();
         }
@@ -35,14 +35,14 @@ public class StatManager : MonoBehaviour
     {
         if (IsClimbing)
         {
-            Stamina -= Time.deltaTime * 1 * DepletionRate;
+            Stamina -= Time.deltaTime * 2 * DepletionRate;
         }
         else if (IsClimbingAndMoving)
         {
-            Stamina -= Time.deltaTime * 2 * DepletionRate;
+            Stamina -= Time.deltaTime * 3 * DepletionRate;
 
         }
-            
+
     }
 
     public void GainStamina()
