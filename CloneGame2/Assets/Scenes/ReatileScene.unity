@@ -512,8 +512,7 @@ GameObject:
   - component: {fileID: 351385410}
   - component: {fileID: 351385409}
   - component: {fileID: 351385414}
-  - component: {fileID: 351385416}
-  - component: {fileID: 351385417}
+  - component: {fileID: 351385415}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -542,7 +541,7 @@ MonoBehaviour:
   lookSpeed: 0.1
   isClimbing: 0
   CanClimb: 0
-  ClimbDistance: 1
+  ClimbDistance: 0.5
   ClimbChecker2: {fileID: 1862040718}
   ClimbSpeed: 1
   Crosshair: {fileID: 1958839060}
@@ -664,56 +663,20 @@ MonoBehaviour:
   Hunger: 0
   HungerDepletion: 0.5
   DepletionRate: 1
---- !u!54 &351385416
-Rigidbody:
+--- !u!114 &351385415
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 351385408}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 112
-  m_CollisionDetection: 0
---- !u!136 &351385417
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 351385408}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90331a53fde651742b62d2f19ae00e85, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forcePower: 1
+  CanSlide: 0
 --- !u!1 &499109327
 GameObject:
   m_ObjectHideFlags: 0
