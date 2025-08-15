@@ -26,6 +26,7 @@ public class CharacterControls : MonoBehaviour
     [SerializeField]
     private float lookSpeed;
     private float verticalLookRotation = 0f;
+    private float horizontalLookRotation = 0f;
 
     [Header("Climbing Settings")]
     [SerializeField]
@@ -37,7 +38,6 @@ public class CharacterControls : MonoBehaviour
     public int ClimbSpeed;
     public Transform Crosshair;
     private StatManager statManagerScript;
-    private SlopeSlideManager slopeSlideScript;
 
 
     private void OnEnable()
@@ -61,7 +61,6 @@ public class CharacterControls : MonoBehaviour
     private void Start()
     {
         statManagerScript = GetComponent<StatManager>();
-        slopeSlideScript = GetComponent<SlopeSlideManager>();
     }
     private void Update()
     {
@@ -139,30 +138,10 @@ public class CharacterControls : MonoBehaviour
             if (hit.collider != null)
             {
                 isClimbing = true;
-                float surfaceNormal = -Vector3.Angle(hit.normal, Vector3.up) + 90;
-
-                if (CanClimb)
-                {
-                   transform.eulerAngles = new Vector3(surfaceNormal, 0, 0);
-                }
-                if (surfaceNormal != 0)
-                {
-                    slopeSlideScript.CanSlide = true;
-                }
-                else if (surfaceNormal == 0)
-                {
-                    slopeSlideScript.CanSlide = false;
-                }
-                
             }
 
         }
-        else if (hit.collider == null)
-        {
-
-            isClimbing = false;
-            slopeSlideScript.CanSlide = false;
-        }
+        
 
         Ray ray2 = new Ray(ClimbChecker2.position, ClimbChecker2.forward);
         RaycastHit hit2;
@@ -176,11 +155,12 @@ public class CharacterControls : MonoBehaviour
             }
 
         }
-        else if (hit2.collider == null)
+        else if (hit.collider == null && hit2.collider == null)
         {
             isClimbing = false;
 
         }
+
 
     }
     void Climb()
@@ -233,7 +213,7 @@ public class CharacterControls : MonoBehaviour
 
     void Move()
     {
-        if (isClimbing && CanClimb)
+        if (CanClimb)
         {
             Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
 
@@ -242,7 +222,7 @@ public class CharacterControls : MonoBehaviour
             characterController.Move(move * ClimbSpeed * Time.deltaTime);
 
         }
-        else if (!isClimbing)
+        else if (!CanClimb)
         {
             Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
 
@@ -273,7 +253,6 @@ public class CharacterControls : MonoBehaviour
     {
         if (CanClimb)
         {
-            Debug.Log("RotateCamera");
             /// Get horizontal and vertical look inputs and adjust based on sensitivity
             float LookX = lookInput.x * lookSpeed;
             float LookY = lookInput.y * lookSpeed;
@@ -285,8 +264,11 @@ public class CharacterControls : MonoBehaviour
             verticalLookRotation -= LookY;
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
 
+            horizontalLookRotation = LookX;
+            horizontalLookRotation = Mathf.Clamp(horizontalLookRotation, -90, 90);
+
             // Apply the clamped vertical rotation to the player camera
-            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, horizontalLookRotation, 0);
         }
         else if (!CanClimb)
         {
