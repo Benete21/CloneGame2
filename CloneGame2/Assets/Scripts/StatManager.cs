@@ -7,7 +7,7 @@ public class StatManager : MonoBehaviour
 {
     public Slider StaminaSlider, HpSlider, HungerBarSlider;
     public float Stamina, HP;
-    public bool IsClimbing, IsClimbingAndMoving;
+    public bool IsClimbing, IsClimbingAndMoving, InFog;
     public float MaxStamina, Hp, Hunger;
     [SerializeField]
     private float HungerDepletion;
@@ -29,6 +29,24 @@ public class StatManager : MonoBehaviour
         }
         HpSlider.value = HP;
         HungerBarSlider.value = Hunger;
+        if (InFog)
+        {
+            FogDamage();
+        }    
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Fog"))
+        {
+            InFog = true;
+        }
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        if(other.CompareTag("Fog"))
+        {
+            InFog = false;
+        }
     }
 
     public void depleteStamina()
@@ -55,7 +73,7 @@ public class StatManager : MonoBehaviour
 
     public void FogDamage()
     {
-
+        HP -= Time.deltaTime * 4 * DepletionRate;
     }
 
     public void LeapStaminaDepletion()
