@@ -94,6 +94,7 @@ GameObject:
   - component: {fileID: 8588380676445748884}
   - component: {fileID: 4342616233187126902}
   - component: {fileID: 4702940941923823996}
+  - component: {fileID: 6411719509483772536}
   m_Layer: 0
   m_Name: treebrown_002
   m_TagString: Untagged
@@ -166,6 +167,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6411719509483772536
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7620180682964523929}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3249908635205199981, guid: 068286f66b175d44a8f40d1a1f65f099, type: 3}
 --- !u!1 &9124998185021929010
 GameObject:
   m_ObjectHideFlags: 0
