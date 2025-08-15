@@ -4,10 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Fog
-  - Rocks
-  - Birds
-  - Sea_Urchin
+  - Gap
   layers:
   - Default
   - TransparentFX

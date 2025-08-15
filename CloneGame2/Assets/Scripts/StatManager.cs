@@ -23,7 +23,10 @@ public class StatManager : MonoBehaviour
     {
         depleteStamina();
         StaminaSlider.value = Stamina;
-        GainStamina();
+        if(!IsClimbing && !IsClimbingAndMoving)
+        {
+            GainStamina();
+        }
         HpSlider.value = HP;
         HungerBarSlider.value = Hunger;
     }
@@ -32,14 +35,14 @@ public class StatManager : MonoBehaviour
     {
         if (IsClimbing)
         {
-            Stamina -= Time.deltaTime * 1 * DepletionRate;
+            Stamina -= Time.deltaTime * 2 * DepletionRate;
         }
         else if (IsClimbingAndMoving)
         {
-            Stamina -= Time.deltaTime * 2 * DepletionRate;
+            Stamina -= Time.deltaTime * 3 * DepletionRate;
 
         }
-            
+
     }
 
     public void GainStamina()
@@ -71,7 +74,7 @@ public class StatManager : MonoBehaviour
         }
         else if (Hunger >= 2.5f)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(30);
             Hunger += HungerDepletion;
             DepletionRate += 0.5f;
             StartCoroutine(HungerBar());

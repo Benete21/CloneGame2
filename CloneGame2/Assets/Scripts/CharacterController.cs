@@ -26,19 +26,21 @@ public class CharacterControls : MonoBehaviour
     [SerializeField]
     private float lookSpeed;
     private float verticalLookRotation = 0f;
-
+    private float horizontalLookRotation = 0f;
 
     [Header("Climbing Settings")]
     [SerializeField]
     private bool isClimbing;
     [SerializeField]
     private bool CanClimb;
-    public int ClimbDistance;
+    public float ClimbDistance;
+    public Transform ClimbChecker;
     public Transform ClimbChecker2;
     public int ClimbSpeed;
     public Transform Crosshair;
     private StatManager statManagerScript;
-
+    private bool InAGap;
+    private bool isLeaping;
 
 
     private void OnEnable()
@@ -65,22 +67,12 @@ public class CharacterControls : MonoBehaviour
     }
     private void Update()
     {
-        if (isClimbing && !CanClimb)
+        if (!CanClimb)
         {
             ApplyGravity();
             statManagerScript.IsClimbing = false;
         }
-        else if (!isClimbing && CanClimb)
-        {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-        }
-        else if (!isClimbing && !CanClimb)
-        {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-        }
-        else if (CanClimb && isClimbing)
+        else if (CanClimb)
         {
             if (statManagerScript.IsClimbingAndMoving == false)
             {
@@ -88,26 +80,23 @@ public class CharacterControls : MonoBehaviour
             }
             else
             {
-                statManagerScript.IsClimbing = true;
+                statManagerScript.IsClimbing = false;
             }
         }
+
 
         Move();
         LookAround();
         ClimbCheck();
 
-        //Vector3 mousePosition = Input.mousePosition;
-        //Crosshair.position = new Vector3(mousePosition.x,  mousePosition.y, Crosshair.position.z);
-
-
-
         if (moveInput.x == 0 || moveInput.y == 0)
         {
             statManagerScript.IsClimbingAndMoving = false;
         }
-        if (moveInput.x ==1  || moveInput.y == 1)
+        if (moveInput.x == 1 || moveInput.y == 1)
         {
-            if(isClimbing && CanClimb)
+
+            if (isClimbing && CanClimb)
             {
                 statManagerScript.IsClimbingAndMoving = true;
 
@@ -126,23 +115,25 @@ public class CharacterControls : MonoBehaviour
     public void ClimbCheck()
     {
 
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(ClimbChecker.position, ClimbChecker.forward);
         RaycastHit hit;
 
 
         if (Physics.Raycast(ray, out hit, ClimbDistance))
         {
-            if (hit.collider != null)
+            if(hit.collider.CompareTag("Gap"))
+            {
+                InAGap = true;
+            }
+            else if (!hit.collider.CompareTag("Gap"))
             {
                 isClimbing = true;
+                InAGap = false;
+
             }
 
         }
-        else if (hit.collider == null)
-        {
-            isClimbing = false;
-
-        }
+        
 
         Ray ray2 = new Ray(ClimbChecker2.position, ClimbChecker2.forward);
         RaycastHit hit2;
@@ -152,20 +143,28 @@ public class CharacterControls : MonoBehaviour
             if (hit2.collider != null)
             {
                 isClimbing = true;
+
             }
 
         }
-        else if (hit2.collider == null)
+        else if (hit.collider == null && hit2.collider == null)
         {
             isClimbing = false;
 
         }
 
+        if (!isClimbing)
+        {
+            CanClimb = false;
+
+        }
     }
     void Climb()
     {
-        CanClimb = true;
-
+        if (isClimbing)
+        {
+            CanClimb = true;
+        }
     }
 
     void CancelClimb()
@@ -174,7 +173,7 @@ public class CharacterControls : MonoBehaviour
     }
     void Interact()
     {
-       
+
     }
 
     void Jump()
@@ -201,31 +200,50 @@ public class CharacterControls : MonoBehaviour
     IEnumerator ClimbJump()
     {
         ClimbSpeed += 8;
+        isLeaping = true;
         statManagerScript.LeapStaminaDepletion();
         yield return new WaitForSeconds(0.3f);
         ClimbSpeed -= 8;
+        isLeaping = false;
 
     }
 
     void Move()
     {
-        if (isClimbing && CanClimb)
+        if (CanClimb)
         {
-            Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
+            if(InAGap)
+            {
+                if (isLeaping)
+                {
+                    Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
 
-            move = transform.TransformDirection(move);
+                    move = transform.TransformDirection(move);
 
-            characterController.Move(move * ClimbSpeed * Time.deltaTime);
+                    characterController.Move(move * ClimbSpeed * Time.deltaTime);
+                }
+                else if (!isLeaping)
+                {
+                    return;
+                }
+            }
+            else if (!InAGap)
+            {
+                Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
+
+                move = transform.TransformDirection(move);
+
+                characterController.Move(move * ClimbSpeed * Time.deltaTime);
+            }
 
         }
-        else if (!isClimbing)
+        else if (!CanClimb)
         {
             Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
 
             move = transform.TransformDirection(move);
 
             characterController.Move(move * moveSpeed * Time.deltaTime);
-
         }
     }
 
@@ -247,19 +265,41 @@ public class CharacterControls : MonoBehaviour
 
     public void LookAround()
     {
-        /// Get horizontal and vertical look inputs and adjust based on sensitivity
-        float LookX = lookInput.x * lookSpeed;
-        float LookY = lookInput.y * lookSpeed;
+        if (CanClimb)
+        {
+            /// Get horizontal and vertical look inputs and adjust based on sensitivity
+            float LookX = lookInput.x * lookSpeed;
+            float LookY = lookInput.y * lookSpeed;
 
-        // Horizontal rotation: Rotate the player object around the y-axis
-        transform.Rotate(0, LookX, 0);
+            // Horizontal rotation: Rotate the player object around the y-axis
+            playerCamera.Rotate(0, LookX, 0);
 
-        // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
-        verticalLookRotation -= LookY;
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
 
-        // Apply the clamped vertical rotation to the player camera
-        playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+            horizontalLookRotation = LookX;
+            horizontalLookRotation = Mathf.Clamp(horizontalLookRotation, -90, 90);
+
+            // Apply the clamped vertical rotation to the player camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, horizontalLookRotation, 0);
+        }
+        else if (!CanClimb)
+        {
+            /// Get horizontal and vertical look inputs and adjust based on sensitivity
+            float LookX = lookInput.x * lookSpeed;
+            float LookY = lookInput.y * lookSpeed;
+
+            // Horizontal rotation: Rotate the player object around the y-axis
+            transform.Rotate(0, LookX, 0);
+
+            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+
+            // Apply the clamped vertical rotation to the player camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+        }
     }
 
 }
