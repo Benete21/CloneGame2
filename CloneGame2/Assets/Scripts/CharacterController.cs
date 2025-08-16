@@ -42,6 +42,13 @@ public class CharacterControls : MonoBehaviour
     private bool InAGap;
     private bool isLeaping;
 
+    //Branch Holding
+    [SerializeField]
+    private int grabDistance;
+    [SerializeField]
+    private bool isHoldingOn;
+
+
 
     private void OnEnable()
     {
@@ -56,6 +63,8 @@ public class CharacterControls : MonoBehaviour
         controls.Player.Jump.performed += ctx => Jump();
         controls.Player.Climb.performed += ctx => Climb();
         controls.Player.Climb.canceled += ctx => CancelClimb();
+        controls.Player.Hold.performed += ctx => HoldBranch();
+        controls.Player.Hold.canceled += ctx => LetGoOFbranch();
 
 
     }
@@ -67,22 +76,35 @@ public class CharacterControls : MonoBehaviour
     }
     private void Update()
     {
-        if (!CanClimb)
+        if (!isHoldingOn)
         {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-        }
-        else if (CanClimb)
-        {
-            if (statManagerScript.IsClimbingAndMoving == false)
+            if (!CanClimb)
             {
-                statManagerScript.IsClimbing = true;
-            }
-            else
-            {
+
+                ApplyGravity();
                 statManagerScript.IsClimbing = false;
             }
+            else if (CanClimb)
+            {
+                if (statManagerScript.IsClimbingAndMoving == false)
+                {
+                    statManagerScript.IsClimbing = true;
+                }
+                else
+                {
+                    statManagerScript.IsClimbing = false;
+                }
+            }
         }
+        else if (isHoldingOn )
+        {
+            if(CanClimb)
+            {
+               CancelClimb();
+
+            }    
+        }
+        
 
 
         Move();
@@ -121,7 +143,7 @@ public class CharacterControls : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, ClimbDistance))
         {
-            if(hit.collider.CompareTag("Gap"))
+            if (hit.collider.CompareTag("Gap"))
             {
                 InAGap = true;
             }
@@ -133,7 +155,7 @@ public class CharacterControls : MonoBehaviour
             }
 
         }
-        
+
 
         Ray ray2 = new Ray(ClimbChecker2.position, ClimbChecker2.forward);
         RaycastHit hit2;
@@ -171,11 +193,30 @@ public class CharacterControls : MonoBehaviour
     {
         CanClimb = false;
     }
-    void Interact()
-    {
 
+    void HoldBranch()
+    {
+        Ray ray = new Ray(playerCamera.position, playerCamera.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 2))
+        {
+            if (hit.collider.CompareTag("Branch"))
+            {
+                isHoldingOn = true;
+                GameObject Branch = hit.collider.gameObject;
+                BranchScript BranchController = Branch.GetComponent<BranchScript>();
+                BranchController.StartBreaking();
+
+            }
+        }
     }
 
+    public void LetGoOFbranch()
+    {
+        isHoldingOn = false;
+
+    }
     void Jump()
     {
         if (!isClimbing)
@@ -212,7 +253,7 @@ public class CharacterControls : MonoBehaviour
     {
         if (CanClimb)
         {
-            if(InAGap)
+            if (InAGap)
             {
                 if (isLeaping)
                 {
