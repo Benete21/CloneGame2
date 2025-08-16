@@ -653,6 +653,7 @@ MonoBehaviour:
   Crosshair: {fileID: 1958839060}
   LeftHand: {fileID: 1328875120}
   RightHand: {fileID: 2088956520}
+  Hands: {fileID: 1707384047}
 --- !u!143 &351385410
 CharacterController:
   m_ObjectHideFlags: 0

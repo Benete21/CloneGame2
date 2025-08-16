@@ -42,6 +42,7 @@ public class CharacterControls : MonoBehaviour
     private bool InAGap;
     private bool isLeaping;
     public Animator LeftHand, RightHand;
+    public Animator Hands;
 
     private void OnEnable()
     {
@@ -97,7 +98,7 @@ public class CharacterControls : MonoBehaviour
         if (moveInput.x == 1 || moveInput.y == 1)
         {
 
-            if (isClimbing && CanClimb)
+            if (CanClimb)
             {
                 statManagerScript.IsClimbingAndMoving = true;
 
@@ -159,6 +160,8 @@ public class CharacterControls : MonoBehaviour
 
             RightHand.SetBool("Climb", false);
             LeftHand.SetBool("Climb", false);
+            Hands.SetBool("Move", false);
+
 
         }
 
@@ -174,6 +177,9 @@ public class CharacterControls : MonoBehaviour
 
                 RightHand.SetBool("Climb", false);
                 LeftHand.SetBool("Climb", false);
+
+                Hands.SetBool("Move", false);
+
             }
 
         }
@@ -251,6 +257,8 @@ public class CharacterControls : MonoBehaviour
 
                     RightHand.SetBool("Climb", true);
                     LeftHand.SetBool("Climb", true);
+
+                    Hands.SetBool("Move", true);
                 
             }
                 else if (!isLeaping)
@@ -274,6 +282,8 @@ public class CharacterControls : MonoBehaviour
 
                 RightHand.SetBool("Climb", true);
                 LeftHand.SetBool("Climb", true);
+                Hands.SetBool("Move", true);
+
             }
 
         }
@@ -286,6 +296,8 @@ public class CharacterControls : MonoBehaviour
             characterController.Move(move * moveSpeed * Time.deltaTime);
             RightHand.SetBool("Idle", true);
             LeftHand.SetBool("Idle", true);
+            Hands.SetBool("Move", false);
+
         }
     }
 
