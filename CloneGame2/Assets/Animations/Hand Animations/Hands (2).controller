@@ -135,25 +135,7 @@ AnimatorController:
   m_PrefabAsset: {fileID: 0}
   m_Name: Hands (2)
   serializedVersion: 5
-  m_AnimatorParameters:
-  - m_Name: Ledge
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: Idle
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: Climb
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+  m_AnimatorParameters: []
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -177,9 +159,7 @@ AnimatorState:
   m_Name: Scene
   m_Speed: 1
   m_CycleOffset: 0
-  m_Transitions:
-  - {fileID: -2545073262674950873}
-  - {fileID: -6618878914973083259}
+  m_Transitions: []
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
@@ -259,13 +239,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 291835161010914898}
-    m_Position: {x: 540, y: 80, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: 5988197142544979304}
-    m_Position: {x: 270, y: 200, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -6125592613339458233}
-    m_Position: {x: 270, y: -40, z: 0}
+    m_Position: {x: 270, y: 170, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
@@ -275,4 +249,4 @@ AnimatorStateMachine:
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
-  m_DefaultState: {fileID: -6125592613339458233}
+  m_DefaultState: {fileID: 291835161010914898}
