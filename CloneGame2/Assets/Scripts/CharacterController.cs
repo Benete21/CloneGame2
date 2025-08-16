@@ -319,39 +319,31 @@ public class CharacterControls : MonoBehaviour
 
     public void LookAround()
     {
+        // Get horizontal and vertical look inputs and adjust based on sensitivity
+        float LookX = lookInput.x * lookSpeed;
+        float LookY = lookInput.y * lookSpeed;
+
         if (CanClimb)
         {
-            /// Get horizontal and vertical look inputs and adjust based on sensitivity
-            float LookX = lookInput.x * lookSpeed;
-            float LookY = lookInput.y * lookSpeed;
-
-            // Horizontal rotation: Rotate the player object around the y-axis
-            playerCamera.Rotate(0, LookX, 0);
-
-            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
-            verticalLookRotation -= LookY;
-            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
-
-            horizontalLookRotation = LookX;
+            // Climbing behavior: Rotate camera independently for both axes
+            horizontalLookRotation += LookX;
             horizontalLookRotation = Mathf.Clamp(horizontalLookRotation, -90, 90);
 
-            // Apply the clamped vertical rotation to the player camera
-            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, horizontalLookRotation, 0);
-        }
-        else if (!CanClimb)
-        {
-            /// Get horizontal and vertical look inputs and adjust based on sensitivity
-            float LookX = lookInput.x * lookSpeed;
-            float LookY = lookInput.y * lookSpeed;
-
-            // Horizontal rotation: Rotate the player object around the y-axis
-            transform.Rotate(0, LookX, 0);
-
-            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
             verticalLookRotation -= LookY;
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
 
-            // Apply the clamped vertical rotation to the player camera
+            // Apply combined rotation to the camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, horizontalLookRotation, 0);
+        }
+        else
+        {
+            // Standard FPS behavior: Rotate player horizontally, camera vertically
+            transform.Rotate(0, LookX, 0);
+
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+
+            // Apply only vertical rotation to the camera
             playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
         }
     }
