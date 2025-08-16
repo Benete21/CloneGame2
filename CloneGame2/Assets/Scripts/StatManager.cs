@@ -13,17 +13,23 @@ public class StatManager : MonoBehaviour
     private float HungerDepletion;
     [SerializeField]
     private float DepletionRate;
-
+    public RawImage targetImage; // Assign a UI Image
     private void Start()
     {
         StartCoroutine(HungerBar());
 
     }
-    private void Update()
+
+    
+
+    void Update()
     {
+        float progress = Mathf.Clamp01(Stamina / 50f);
+        targetImage.color = Color.Lerp(Color.red, new Color(0.5f, 0.8f, 1f), progress);
+
         depleteStamina();
         StaminaSlider.value = Stamina;
-        if(!IsClimbing && !IsClimbingAndMoving)
+        if (!IsClimbing && !IsClimbingAndMoving)
         {
             GainStamina();
         }
@@ -51,14 +57,17 @@ public class StatManager : MonoBehaviour
 
     public void depleteStamina()
     {
-        if (IsClimbing)
+        if (Stamina > 0)
         {
-            Stamina -= Time.deltaTime * 2 * DepletionRate;
-        }
-        else if (IsClimbingAndMoving)
-        {
-            Stamina -= Time.deltaTime * 3 * DepletionRate;
+            if (IsClimbing)
+            {
+                Stamina -= Time.deltaTime * 2 * DepletionRate;
+            }
+            else if (IsClimbingAndMoving)
+            {
+                Stamina -= Time.deltaTime * 3 * DepletionRate;
 
+            }
         }
 
     }
