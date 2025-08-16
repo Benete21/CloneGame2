@@ -125,6 +125,11 @@ public class CharacterControls : MonoBehaviour
             }
         }
 
+
+        if (statManagerScript.Stamina < 1)
+        {
+            CancelClimb();
+        }
     }
 
 
@@ -183,7 +188,7 @@ public class CharacterControls : MonoBehaviour
     }
     void Climb()
     {
-        if (isClimbing)
+        if (isClimbing && statManagerScript.Stamina > 1)
         {
             CanClimb = true;
         }

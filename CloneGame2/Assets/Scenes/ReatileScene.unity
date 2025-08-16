@@ -581,7 +581,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.0039215684, g: 0.8954227, b: 1, a: 1}
+  m_Color: {r: 0, g: 0.88888884, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -772,6 +772,7 @@ MonoBehaviour:
   Hunger: 0
   HungerDepletion: 0.5
   DepletionRate: 1
+  targetImage: {fileID: 292635776}
 --- !u!114 &351385415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2390,7 +2391,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 50
   m_WholeNumbers: 0
-  m_Value: 0
+  m_Value: 50
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
