@@ -41,6 +41,8 @@ public class CharacterControls : MonoBehaviour
     private StatManager statManagerScript;
     private bool InAGap;
     private bool isLeaping;
+    public Animator LeftHand, RightHand;
+    public Animator Hands;
 
     //Branch Holding
     [SerializeField]
@@ -118,7 +120,7 @@ public class CharacterControls : MonoBehaviour
         if (moveInput.x == 1 || moveInput.y == 1)
         {
 
-            if (isClimbing && CanClimb)
+            if (CanClimb)
             {
                 statManagerScript.IsClimbingAndMoving = true;
 
@@ -177,6 +179,34 @@ public class CharacterControls : MonoBehaviour
         else if (hit.collider == null && hit2.collider == null)
         {
             isClimbing = false;
+            RightHand.SetBool("Idle", true);
+            LeftHand.SetBool("Idle", true);
+
+            RightHand.SetBool("Ledge", false);
+            LeftHand.SetBool("Ledge", false);
+
+            RightHand.SetBool("Climb", false);
+            LeftHand.SetBool("Climb", false);
+            Hands.SetBool("Move", false);
+
+        }
+
+        if (hit.collider == null && hit2.collider != null)
+        {
+            if (CanClimb)
+            {
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", true);
+                LeftHand.SetBool("Ledge", true);
+
+                RightHand.SetBool("Climb", false);
+                LeftHand.SetBool("Climb", false);
+
+                Hands.SetBool("Move", false);
+
+            }
 
         }
 
@@ -267,6 +297,17 @@ public class CharacterControls : MonoBehaviour
                     move = transform.TransformDirection(move);
 
                     characterController.Move(move * ClimbSpeed * Time.deltaTime);
+
+                    RightHand.SetBool("Idle", false);
+                    LeftHand.SetBool("Idle", false);
+
+                    RightHand.SetBool("Ledge", false);
+                    LeftHand.SetBool("Ledge", false);
+
+                    RightHand.SetBool("Climb", true);
+                    LeftHand.SetBool("Climb", true);
+
+                    Hands.SetBool("Move", true);
                 }
                 else if (!isLeaping)
                 {
@@ -280,6 +321,17 @@ public class CharacterControls : MonoBehaviour
                 move = transform.TransformDirection(move);
 
                 characterController.Move(move * ClimbSpeed * Time.deltaTime);
+
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", false);
+                LeftHand.SetBool("Ledge", false);
+
+                RightHand.SetBool("Climb", true);
+                LeftHand.SetBool("Climb", true);
+
+                Hands.SetBool("Move", true);
             }
 
         }
@@ -311,39 +363,31 @@ public class CharacterControls : MonoBehaviour
 
     public void LookAround()
     {
+        // Get horizontal and vertical look inputs and adjust based on sensitivity
+        float LookX = lookInput.x * lookSpeed;
+        float LookY = lookInput.y * lookSpeed;
+
         if (CanClimb)
         {
-            /// Get horizontal and vertical look inputs and adjust based on sensitivity
-            float LookX = lookInput.x * lookSpeed;
-            float LookY = lookInput.y * lookSpeed;
-
-            // Horizontal rotation: Rotate the player object around the y-axis
-            playerCamera.Rotate(0, LookX, 0);
-
-            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
-            verticalLookRotation -= LookY;
-            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
-
-            horizontalLookRotation = LookX;
+            // Climbing behavior: Rotate camera independently for both axes
+            horizontalLookRotation += LookX;
             horizontalLookRotation = Mathf.Clamp(horizontalLookRotation, -90, 90);
 
-            // Apply the clamped vertical rotation to the player camera
-            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, horizontalLookRotation, 0);
-        }
-        else if (!CanClimb)
-        {
-            /// Get horizontal and vertical look inputs and adjust based on sensitivity
-            float LookX = lookInput.x * lookSpeed;
-            float LookY = lookInput.y * lookSpeed;
-
-            // Horizontal rotation: Rotate the player object around the y-axis
-            transform.Rotate(0, LookX, 0);
-
-            // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
             verticalLookRotation -= LookY;
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
 
-            // Apply the clamped vertical rotation to the player camera
+            // Apply combined rotation to the camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, horizontalLookRotation, 0);
+        }
+        else
+        {
+            // Standard FPS behavior: Rotate player horizontally, camera vertically
+            transform.Rotate(0, LookX, 0);
+
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+
+            // Apply only vertical rotation to the camera
             playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
         }
     }
