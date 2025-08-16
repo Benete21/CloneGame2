@@ -41,14 +41,8 @@ public class CharacterControls : MonoBehaviour
     private StatManager statManagerScript;
     private bool InAGap;
     private bool isLeaping;
-
-    //Branch Holding
-    [SerializeField]
-    private int grabDistance;
-    [SerializeField]
-    private bool isHoldingOn;
-
-
+    public Animator LeftHand, RightHand;
+    public Animator Hands;
 
     private void OnEnable()
     {
@@ -63,8 +57,6 @@ public class CharacterControls : MonoBehaviour
         controls.Player.Jump.performed += ctx => Jump();
         controls.Player.Climb.performed += ctx => Climb();
         controls.Player.Climb.canceled += ctx => CancelClimb();
-        controls.Player.Hold.performed += ctx => HoldBranch();
-        controls.Player.Hold.canceled += ctx => LetGoOFbranch();
 
 
     }
@@ -76,35 +68,23 @@ public class CharacterControls : MonoBehaviour
     }
     private void Update()
     {
-        if (!isHoldingOn)
+        if (!CanClimb)
         {
-            if (!CanClimb)
+            ApplyGravity();
+            statManagerScript.IsClimbing = false;
+        }
+        else if (CanClimb)
+        {
+            if (statManagerScript.IsClimbingAndMoving == false)
             {
-
-                ApplyGravity();
+                statManagerScript.IsClimbing = true;
+            }
+            else
+            {
                 statManagerScript.IsClimbing = false;
             }
-            else if (CanClimb)
-            {
-                if (statManagerScript.IsClimbingAndMoving == false)
-                {
-                    statManagerScript.IsClimbing = true;
-                }
-                else
-                {
-                    statManagerScript.IsClimbing = false;
-                }
-            }
-        }
-        else if (isHoldingOn )
-        {
-            if(CanClimb)
-            {
-               CancelClimb();
 
-            }    
         }
-        
 
 
         Move();
@@ -118,18 +98,13 @@ public class CharacterControls : MonoBehaviour
         if (moveInput.x == 1 || moveInput.y == 1)
         {
 
-            if (isClimbing && CanClimb)
+            if (CanClimb)
             {
                 statManagerScript.IsClimbingAndMoving = true;
 
             }
         }
 
-
-        if (statManagerScript.Stamina < 1)
-        {
-            CancelClimb();
-        }
     }
 
 
@@ -148,7 +123,7 @@ public class CharacterControls : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, ClimbDistance))
         {
-            if (hit.collider.CompareTag("Gap"))
+            if(hit.collider.CompareTag("Gap"))
             {
                 InAGap = true;
             }
@@ -160,7 +135,7 @@ public class CharacterControls : MonoBehaviour
             }
 
         }
-
+        
 
         Ray ray2 = new Ray(ClimbChecker2.position, ClimbChecker2.forward);
         RaycastHit hit2;
@@ -177,6 +152,35 @@ public class CharacterControls : MonoBehaviour
         else if (hit.collider == null && hit2.collider == null)
         {
             isClimbing = false;
+            RightHand.SetBool("Idle", true);
+            LeftHand.SetBool("Idle", true);
+
+            RightHand.SetBool("Ledge", false);
+            LeftHand.SetBool("Ledge", false);
+
+            RightHand.SetBool("Climb", false);
+            LeftHand.SetBool("Climb", false);
+            Hands.SetBool("Move", false);
+
+
+        }
+
+        if (hit.collider == null && hit2.collider != null)
+        {
+            if(CanClimb)
+            {
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", true);
+                LeftHand.SetBool("Ledge", true);
+
+                RightHand.SetBool("Climb", false);
+                LeftHand.SetBool("Climb", false);
+
+                Hands.SetBool("Move", false);
+
+            }
 
         }
 
@@ -188,7 +192,7 @@ public class CharacterControls : MonoBehaviour
     }
     void Climb()
     {
-        if (isClimbing && statManagerScript.Stamina > 1)
+        if (isClimbing)
         {
             CanClimb = true;
         }
@@ -198,33 +202,14 @@ public class CharacterControls : MonoBehaviour
     {
         CanClimb = false;
     }
-
-    void HoldBranch()
+    void Interact()
     {
-        Ray ray = new Ray(playerCamera.position, playerCamera.forward);
-        RaycastHit hit;
 
-        if (Physics.Raycast(ray, out hit, 2))
-        {
-            if (hit.collider.CompareTag("Branch"))
-            {
-                isHoldingOn = true;
-                GameObject Branch = hit.collider.gameObject;
-                BranchScript BranchController = Branch.GetComponent<BranchScript>();
-                BranchController.StartBreaking();
-
-            }
-        }
     }
 
-    public void LetGoOFbranch()
-    {
-        isHoldingOn = false;
-
-    }
     void Jump()
     {
-        if (!isClimbing)
+        if (!CanClimb)
         {
             Ray ray = new Ray(transform.position, Vector3.down);
             RaycastHit hit;
@@ -233,14 +218,11 @@ public class CharacterControls : MonoBehaviour
                 velocity.y = Mathf.Sqrt(JumpHeight * -2f * gravity);
             }
         }
-        else if (isClimbing && CanClimb)
+        else if (CanClimb)
         {
             StartCoroutine(ClimbJump());
         }
-        else if (isClimbing && !CanClimb)
-        {
-            StartCoroutine(ClimbJump());
-        }
+       
     }
 
     IEnumerator ClimbJump()
@@ -258,7 +240,7 @@ public class CharacterControls : MonoBehaviour
     {
         if (CanClimb)
         {
-            if (InAGap)
+            if(InAGap)
             {
                 if (isLeaping)
                 {
@@ -267,7 +249,18 @@ public class CharacterControls : MonoBehaviour
                     move = transform.TransformDirection(move);
 
                     characterController.Move(move * ClimbSpeed * Time.deltaTime);
-                }
+                    RightHand.SetBool("Idle", false);
+                    LeftHand.SetBool("Idle", false);
+
+                    RightHand.SetBool("Ledge", false);
+                    LeftHand.SetBool("Ledge", false);
+
+                    RightHand.SetBool("Climb", true);
+                    LeftHand.SetBool("Climb", true);
+
+                    Hands.SetBool("Move", true);
+                
+            }
                 else if (!isLeaping)
                 {
                     return;
@@ -280,6 +273,17 @@ public class CharacterControls : MonoBehaviour
                 move = transform.TransformDirection(move);
 
                 characterController.Move(move * ClimbSpeed * Time.deltaTime);
+
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", false);
+                LeftHand.SetBool("Ledge", false);
+
+                RightHand.SetBool("Climb", true);
+                LeftHand.SetBool("Climb", true);
+                Hands.SetBool("Move", true);
+
             }
 
         }
@@ -290,6 +294,10 @@ public class CharacterControls : MonoBehaviour
             move = transform.TransformDirection(move);
 
             characterController.Move(move * moveSpeed * Time.deltaTime);
+            RightHand.SetBool("Idle", true);
+            LeftHand.SetBool("Idle", true);
+            Hands.SetBool("Move", false);
+
         }
     }
 
