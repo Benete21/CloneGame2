@@ -8,7 +8,7 @@ public class StatManager : MonoBehaviour
     public Slider StaminaSlider, HpSlider, HungerBarSlider;
     public float Stamina, HP;
     public bool IsClimbing, IsClimbingAndMoving, InFog;
-    public float MaxStamina, Hp, Hunger;
+    public float MaxStamina, MaxHp, Hp, Hunger;
     [SerializeField]
     private float HungerDepletion;
     [SerializeField]

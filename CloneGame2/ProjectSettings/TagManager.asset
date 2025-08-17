@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Gap
   - Branch
+  - CheckPoint
   layers:
   - Default
   - TransparentFX
