@@ -263,14 +263,11 @@ public class CharacterControls : MonoBehaviour
                 velocity.y = Mathf.Sqrt(JumpHeight * -2f * gravity);
             }
         }
-        else if (isClimbing && CanClimb)
+        else if (CanClimb)
         {
             StartCoroutine(ClimbJump());
         }
-        else if (isClimbing && !CanClimb)
-        {
-            StartCoroutine(ClimbJump());
-        }
+
     }
 
     IEnumerator ClimbJump()
