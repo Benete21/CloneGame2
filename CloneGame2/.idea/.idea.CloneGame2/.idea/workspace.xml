@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="a00ddfd1-d3d6-4082-a4c2-c0e6e516f297" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Assets/Mountains.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mountains/HP_RockForms.fbx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mountains/HP_RockForms.fbx.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mountains/rockform1.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mountains/rockform1.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mountains/rockform2.mat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Mountains/rockform2.mat.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/FallingRocks.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scripts/FallingRocks.cs.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm01_Diffuse_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm01_Diffuse_01.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm01_Normal_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm01_Normal_01.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm02_Diffuse_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm02_Diffuse_01.png.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm02_Normal_01.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Textures/RockForm02_Normal_01.png.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/ApayinScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/ApayinScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures.meta" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="31KGmrqaMHrw8MrLOmv5I26de46" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "Merging BennettBranch",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\benet\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\DecompilerCache",
+      "C:\\Users\\benet\\AppData\\Roaming\\JetBrains\\Rider2023.3\\resharper-host\\SourcesCache",
+      "C:\\Users\\benet\\AppData\\Local\\Symbols\\src"
+    ]
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a00ddfd1-d3d6-4082-a4c2-c0e6e516f297" name="Changes" comment="" />
+      <created>1755265513050</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1755265513050</updated>
+      <workItem from="1755265517120" duration="8000" />
+    </task>
+    <servers />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="true" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+</project>

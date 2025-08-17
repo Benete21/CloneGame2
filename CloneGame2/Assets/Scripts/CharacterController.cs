@@ -26,18 +26,29 @@ public class CharacterControls : MonoBehaviour
     [SerializeField]
     private float lookSpeed;
     private float verticalLookRotation = 0f;
-
+    private float horizontalLookRotation = 0f;
 
     [Header("Climbing Settings")]
     [SerializeField]
     private bool isClimbing;
     [SerializeField]
     private bool CanClimb;
-    public int ClimbDistance;
+    public float ClimbDistance;
+    public Transform ClimbChecker;
     public Transform ClimbChecker2;
     public int ClimbSpeed;
     public Transform Crosshair;
     private StatManager statManagerScript;
+    private bool InAGap;
+    private bool isLeaping;
+    public Animator LeftHand, RightHand;
+    public Animator Hands;
+
+    //Branch Holding
+    [SerializeField]
+    private int grabDistance;
+    [SerializeField]
+    private bool isHoldingOn;
 
 
 
@@ -54,6 +65,8 @@ public class CharacterControls : MonoBehaviour
         controls.Player.Jump.performed += ctx => Jump();
         controls.Player.Climb.performed += ctx => Climb();
         controls.Player.Climb.canceled += ctx => CancelClimb();
+        controls.Player.Hold.performed += ctx => HoldBranch();
+        controls.Player.Hold.canceled += ctx => LetGoOFbranch();
 
 
     }
@@ -65,55 +78,60 @@ public class CharacterControls : MonoBehaviour
     }
     private void Update()
     {
-        if (isClimbing && !CanClimb)
+        if (!isHoldingOn)
         {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-        }
-        else if (!isClimbing && CanClimb)
-        {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-        }
-        else if (!isClimbing && !CanClimb)
-        {
-            ApplyGravity();
-            statManagerScript.IsClimbing = false;
-        }
-        else if (CanClimb && isClimbing)
-        {
-            if (statManagerScript.IsClimbingAndMoving == false)
+            if (!CanClimb)
             {
-                statManagerScript.IsClimbing = true;
+
+                ApplyGravity();
+                statManagerScript.IsClimbing = false;
             }
-            else
+            else if (CanClimb)
             {
-                statManagerScript.IsClimbing = true;
+                if (statManagerScript.IsClimbingAndMoving == false)
+                {
+                    statManagerScript.IsClimbing = true;
+                }
+                else
+                {
+                    statManagerScript.IsClimbing = false;
+                }
             }
         }
+        else if (isHoldingOn )
+        {
+            if(CanClimb)
+            {
+               CancelClimb();
+
+            }    
+        }
+        
+
 
         Move();
         LookAround();
         ClimbCheck();
 
-        //Vector3 mousePosition = Input.mousePosition;
-        //Crosshair.position = new Vector3(mousePosition.x,  mousePosition.y, Crosshair.position.z);
-
-
-
         if (moveInput.x == 0 || moveInput.y == 0)
         {
             statManagerScript.IsClimbingAndMoving = false;
         }
-        if (moveInput.x ==1  || moveInput.y == 1)
+        if (moveInput.x == 1 || moveInput.y == 1)
         {
-            if(isClimbing && CanClimb)
+
+            if (CanClimb)
             {
                 statManagerScript.IsClimbingAndMoving = true;
 
             }
         }
 
+
+        if (statManagerScript.Stamina < 1)
+        {
+            CancelClimb();
+        }
     }
 
 
@@ -126,23 +144,25 @@ public class CharacterControls : MonoBehaviour
     public void ClimbCheck()
     {
 
-        Ray ray = new Ray(transform.position, transform.forward);
+        Ray ray = new Ray(ClimbChecker.position, ClimbChecker.forward);
         RaycastHit hit;
 
 
         if (Physics.Raycast(ray, out hit, ClimbDistance))
         {
-            if (hit.collider != null)
+            if (hit.collider.CompareTag("Gap"))
+            {
+                InAGap = true;
+            }
+            else if (!hit.collider.CompareTag("Gap"))
             {
                 isClimbing = true;
+                InAGap = false;
+
             }
 
         }
-        else if (hit.collider == null)
-        {
-            isClimbing = false;
 
-        }
 
         Ray ray2 = new Ray(ClimbChecker2.position, ClimbChecker2.forward);
         RaycastHit hit2;
@@ -152,31 +172,86 @@ public class CharacterControls : MonoBehaviour
             if (hit2.collider != null)
             {
                 isClimbing = true;
+
             }
 
         }
-        else if (hit2.collider == null)
+        else if (hit.collider == null && hit2.collider == null)
         {
             isClimbing = false;
+            RightHand.SetBool("Idle", true);
+            LeftHand.SetBool("Idle", true);
+
+            RightHand.SetBool("Ledge", false);
+            LeftHand.SetBool("Ledge", false);
+
+            RightHand.SetBool("Climb", false);
+            LeftHand.SetBool("Climb", false);
+            Hands.SetBool("Move", false);
 
         }
 
+        if (hit.collider == null && hit2.collider != null)
+        {
+            if (CanClimb)
+            {
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", true);
+                LeftHand.SetBool("Ledge", true);
+
+                RightHand.SetBool("Climb", false);
+                LeftHand.SetBool("Climb", false);
+
+                Hands.SetBool("Move", false);
+
+            }
+
+        }
+
+        if (!isClimbing)
+        {
+            CanClimb = false;
+
+        }
     }
     void Climb()
     {
-        CanClimb = true;
-
+        if (isClimbing && statManagerScript.Stamina > 1)
+        {
+            CanClimb = true;
+        }
     }
 
     void CancelClimb()
     {
         CanClimb = false;
     }
-    void Interact()
+
+    void HoldBranch()
     {
-       
+        Ray ray = new Ray(playerCamera.position, playerCamera.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit, 2))
+        {
+            if (hit.collider.CompareTag("Branch"))
+            {
+                isHoldingOn = true;
+                GameObject Branch = hit.collider.gameObject;
+                BranchScript BranchController = Branch.GetComponent<BranchScript>();
+                BranchController.StartBreaking();
+
+            }
+        }
     }
 
+    public void LetGoOFbranch()
+    {
+        isHoldingOn = false;
+
+    }
     void Jump()
     {
         if (!isClimbing)
@@ -201,31 +276,72 @@ public class CharacterControls : MonoBehaviour
     IEnumerator ClimbJump()
     {
         ClimbSpeed += 8;
+        isLeaping = true;
         statManagerScript.LeapStaminaDepletion();
         yield return new WaitForSeconds(0.3f);
         ClimbSpeed -= 8;
+        isLeaping = false;
 
     }
 
     void Move()
     {
-        if (isClimbing && CanClimb)
+        if (CanClimb)
         {
-            Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
+            if (InAGap)
+            {
+                if (isLeaping)
+                {
+                    Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
 
-            move = transform.TransformDirection(move);
+                    move = transform.TransformDirection(move);
 
-            characterController.Move(move * ClimbSpeed * Time.deltaTime);
+                    characterController.Move(move * ClimbSpeed * Time.deltaTime);
+
+                    RightHand.SetBool("Idle", false);
+                    LeftHand.SetBool("Idle", false);
+
+                    RightHand.SetBool("Ledge", false);
+                    LeftHand.SetBool("Ledge", false);
+
+                    RightHand.SetBool("Climb", true);
+                    LeftHand.SetBool("Climb", true);
+
+                    Hands.SetBool("Move", true);
+                }
+                else if (!isLeaping)
+                {
+                    return;
+                }
+            }
+            else if (!InAGap)
+            {
+                Vector3 move = new Vector3(moveInput.x, moveInput.y, 0);
+
+                move = transform.TransformDirection(move);
+
+                characterController.Move(move * ClimbSpeed * Time.deltaTime);
+
+                RightHand.SetBool("Idle", false);
+                LeftHand.SetBool("Idle", false);
+
+                RightHand.SetBool("Ledge", false);
+                LeftHand.SetBool("Ledge", false);
+
+                RightHand.SetBool("Climb", true);
+                LeftHand.SetBool("Climb", true);
+
+                Hands.SetBool("Move", true);
+            }
 
         }
-        else if (!isClimbing)
+        else if (!CanClimb)
         {
             Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
 
             move = transform.TransformDirection(move);
 
             characterController.Move(move * moveSpeed * Time.deltaTime);
-
         }
     }
 
@@ -247,19 +363,33 @@ public class CharacterControls : MonoBehaviour
 
     public void LookAround()
     {
-        /// Get horizontal and vertical look inputs and adjust based on sensitivity
+        // Get horizontal and vertical look inputs and adjust based on sensitivity
         float LookX = lookInput.x * lookSpeed;
         float LookY = lookInput.y * lookSpeed;
 
-        // Horizontal rotation: Rotate the player object around the y-axis
-        transform.Rotate(0, LookX, 0);
+        if (CanClimb)
+        {
+            // Climbing behavior: Rotate camera independently for both axes
+            horizontalLookRotation += LookX;
+            horizontalLookRotation = Mathf.Clamp(horizontalLookRotation, -90, 90);
 
-        // Vertical rotation: Adjust the vertical look rotation and clamp it to prevent flipping
-        verticalLookRotation -= LookY;
-        verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
 
-        // Apply the clamped vertical rotation to the player camera
-        playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+            // Apply combined rotation to the camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, horizontalLookRotation, 0);
+        }
+        else
+        {
+            // Standard FPS behavior: Rotate player horizontally, camera vertically
+            transform.Rotate(0, LookX, 0);
+
+            verticalLookRotation -= LookY;
+            verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90, 60);
+
+            // Apply only vertical rotation to the camera
+            playerCamera.localEulerAngles = new Vector3(verticalLookRotation, 0, 0);
+        }
     }
 
 }

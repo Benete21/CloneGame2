@@ -7,39 +7,69 @@ public class StatManager : MonoBehaviour
 {
     public Slider StaminaSlider, HpSlider, HungerBarSlider;
     public float Stamina, HP;
-    public bool IsClimbing, IsClimbingAndMoving;
+    public bool IsClimbing, IsClimbingAndMoving, InFog;
     public float MaxStamina, Hp, Hunger;
     [SerializeField]
     private float HungerDepletion;
     [SerializeField]
     private float DepletionRate;
-
+    public RawImage targetImage; // Assign a UI Image
     private void Start()
     {
         StartCoroutine(HungerBar());
 
     }
-    private void Update()
+
+    
+
+    void Update()
     {
+        float progress = Mathf.Clamp01(Stamina / 50f);
+        targetImage.color = Color.Lerp(Color.red, new Color(0.5f, 0.8f, 1f), progress);
+
         depleteStamina();
         StaminaSlider.value = Stamina;
-        GainStamina();
+        if (!IsClimbing && !IsClimbingAndMoving)
+        {
+            GainStamina();
+        }
         HpSlider.value = HP;
         HungerBarSlider.value = Hunger;
+        if (InFog)
+        {
+            FogDamage();
+        }    
+    }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Fog"))
+        {
+            InFog = true;
+        }
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        if(other.CompareTag("Fog"))
+        {
+            InFog = false;
+        }
     }
 
     public void depleteStamina()
     {
-        if (IsClimbing)
+        if (Stamina > 0)
         {
-            Stamina -= Time.deltaTime * 1 * DepletionRate;
-        }
-        else if (IsClimbingAndMoving)
-        {
-            Stamina -= Time.deltaTime * 2 * DepletionRate;
+            if (IsClimbing)
+            {
+                Stamina -= Time.deltaTime * 2 * DepletionRate;
+            }
+            else if (IsClimbingAndMoving)
+            {
+                Stamina -= Time.deltaTime * 3 * DepletionRate;
 
+            }
         }
-            
+
     }
 
     public void GainStamina()
@@ -52,7 +82,7 @@ public class StatManager : MonoBehaviour
 
     public void FogDamage()
     {
-
+        HP -= Time.deltaTime * 4 * DepletionRate;
     }
 
     public void LeapStaminaDepletion()
@@ -71,7 +101,7 @@ public class StatManager : MonoBehaviour
         }
         else if (Hunger >= 2.5f)
         {
-            yield return new WaitForSeconds(2);
+            yield return new WaitForSeconds(30);
             Hunger += HungerDepletion;
             DepletionRate += 0.5f;
             StartCoroutine(HungerBar());
