@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,8 @@ public class StatManager : MonoBehaviour
     [SerializeField]
     private float DepletionRate;
     public RawImage targetImage; // Assign a UI Image
+    [SerializeField]
+    private int StaminaGainrate;
     private void Start()
     {
         StartCoroutine(HungerBar());
@@ -33,18 +36,24 @@ public class StatManager : MonoBehaviour
         {
             GainStamina();
         }
-        HpSlider.value = HP;
+        HpSlider.value = Hp;
         HungerBarSlider.value = Hunger;
         if (InFog)
         {
             FogDamage();
         }    
+
+        StaminaSlider.maxValue = MaxStamina;
     }
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Fog"))
         {
             InFog = true;
+        }
+        else if (other.CompareTag("Fire"))
+        {
+            Stamina = MaxStamina;
         }
     }
     public void OnTriggerExit(Collider other)
@@ -76,13 +85,13 @@ public class StatManager : MonoBehaviour
     {
         if (!IsClimbing && Stamina < MaxStamina)
         {
-            Stamina += Time.deltaTime * 3;
+            Stamina += Time.deltaTime * StaminaGainrate;
         }
     }
 
     public void FogDamage()
     {
-        HP -= Time.deltaTime * 4 * DepletionRate;
+        Hp -= Time.deltaTime * 4 * DepletionRate;
     }
 
     public void LeapStaminaDepletion()
@@ -107,4 +116,6 @@ public class StatManager : MonoBehaviour
             StartCoroutine(HungerBar());
         }
     }
+
+
 }

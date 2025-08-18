@@ -13,6 +13,7 @@ TagManager:
   - Obstacle2
   - Obstacle3
   - Birds
+  - Fire
   layers:
   - Default
   - TransparentFX
