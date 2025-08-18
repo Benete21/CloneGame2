@@ -15,8 +15,12 @@ public class Level_Obstacles : MonoBehaviour
     public float spawnIntervalMaxRock; // Maximum time between spawns for rocks
     public float spawnIntervalMinBird;  // Minimum time between spawns for bird
     public float spawnIntervalMaxBird;  // Maximum time between spawns for bird
+    public float spawnIntervalMinBirdRocks;  // Minimum time between spawns for bird
+    public float spawnIntervalMaxBirdRocks;  // Maximum time between spawns for bird
     public List<GameObject> SpawnPointsRock = new List<GameObject>();
     public List<GameObject> SpawnPointsBird = new List<GameObject>();
+    public List<GameObject> SpawnPointsBirdTop = new List<GameObject>();
+    public List<GameObject> SpawnPointsRockTop = new List<GameObject>();
 
     public GameObject player;
     public Collider playerCollider;
@@ -56,6 +60,10 @@ public class Level_Obstacles : MonoBehaviour
     {
         StartCoroutine(SpawnRocksCoroutine());
     }
+    public void StartBirdRocksSpawn()
+    {
+        StartCoroutine(SpawnRocksBirdsCoroutine());
+    }
     IEnumerator SpawnRocksCoroutine()
     {
         while (true)
@@ -92,21 +100,26 @@ public class Level_Obstacles : MonoBehaviour
             }
         }
     }
-    IEnumerator SpawnRocksRocksCoroutine()
+    IEnumerator SpawnRocksBirdsCoroutine()
     {
         while (true)
         {
             // Randomize spawn time
-            float randomTime = Random.Range(spawnIntervalMinRock, spawnIntervalMaxRock);
+            float randomTime = Random.Range(spawnIntervalMinBirdRocks, spawnIntervalMaxBirdRocks);
             yield return new WaitForSeconds(randomTime);
 
             // Randomize X position
-            foreach (GameObject i in SpawnPointsRock)
+            foreach (GameObject i in SpawnPointsRockTop)
             {
                 Vector3 j = i.transform.position;
                 Instantiate(rockPrefab, j, Quaternion.identity);
-
                 OnObstacleSpawned?.Invoke(j, ObstacleType.Rock); //Notify indicators system
+            }
+            foreach (GameObject i in SpawnPointsBirdTop)
+            {
+                Vector3 j = i.transform.position;
+                Instantiate(birdPrefab, j, Quaternion.identity);
+                OnObstacleSpawned?.Invoke(j, ObstacleType.Bird); //notify indicator system
             }
 
         }

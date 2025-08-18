@@ -149,7 +149,7 @@ public class CharacterControls : MonoBehaviour
         }
         else if (other.CompareTag("Obstacle3"))
         {
-
+            LevelOb.StartBirdRocksSpawn();  
         }
     }
 
