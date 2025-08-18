@@ -14,8 +14,8 @@ public class Level_Obstacles : MonoBehaviour
     public float spawnIntervalMaxRock; // Maximum time between spawns for rocks
     public float spawnIntervalMinBird;  // Minimum time between spawns for bird
     public float spawnIntervalMaxBird;  // Maximum time between spawns for bird
-    public List<Vector3> SpawnPointsRock = new List<Vector3>();
-    public List<Vector3> SpawnPointsBird = new List<Vector3>();
+    public List<GameObject> SpawnPointsRock = new List<GameObject>();
+    public List<GameObject> SpawnPointsBird = new List<GameObject>();
 
     public GameObject player;
 
@@ -25,16 +25,23 @@ public class Level_Obstacles : MonoBehaviour
 
     void Start()
     {
-       /* StartCoroutine(SpawnRocksCoroutine());
-        StartCoroutine(SpawnBirdCoroutine());*/
+        /* StartCoroutine(SpawnRocksCoroutine());
+         StartCoroutine(SpawnBirdCoroutine());*/
     }
     public void OnTriggerEnter(Collider other)
     {
         player = other.gameObject;
-        if (player.CompareTag ("Obstacle1"))
+        if (player.CompareTag("Obstacle1"))
+        {
+            StartCoroutine(SpawnBirdCoroutine());
+        }
+        else if (player.CompareTag("Obstacle2"))
         {
             StartCoroutine(SpawnRocksCoroutine());
-            StartCoroutine(SpawnBirdCoroutine());
+        }
+        else if (player.CompareTag("Obstacle3"))
+        {
+
         }
     }
     IEnumerator SpawnRocksCoroutine()
@@ -46,11 +53,12 @@ public class Level_Obstacles : MonoBehaviour
             yield return new WaitForSeconds(randomTime);
 
             // Randomize X position
-            foreach (Vector3 i in SpawnPointsRock)
+            foreach (GameObject i in SpawnPointsRock)
             {
-                Instantiate(rockPrefab, i, Quaternion.identity);
+                Vector3 j = i.transform.position;
+                Instantiate(rockPrefab, j, Quaternion.identity);
 
-                OnObstacleSpawned?.Invoke(i, ObstacleType.Rock); //Notify indicators system
+                OnObstacleSpawned?.Invoke(j, ObstacleType.Rock); //Notify indicators system
             }
         }
 
@@ -64,11 +72,32 @@ public class Level_Obstacles : MonoBehaviour
             yield return new WaitForSeconds(randomTime);
 
             // Randomize X position
-            foreach (Vector3 i in SpawnPointsBird)
+            foreach (GameObject i in SpawnPointsBird)
             {
-                Instantiate(birdPrefab, i, Quaternion.identity);
-                OnObstacleSpawned?.Invoke(i, ObstacleType.Bird); //notify indicator system
+                Vector3 j = i.transform.position;
+                Instantiate(birdPrefab, j, Quaternion.identity);
+                OnObstacleSpawned?.Invoke(j, ObstacleType.Bird); //notify indicator system
             }
         }
     }
+    IEnumerator SpawnRocksRocksCoroutine()
+    {
+        while (true)
+        {
+            // Randomize spawn time
+            float randomTime = Random.Range(spawnIntervalMinRock, spawnIntervalMaxRock);
+            yield return new WaitForSeconds(randomTime);
+
+            // Randomize X position
+            foreach (GameObject i in SpawnPointsRock)
+            {
+                Vector3 j = i.transform.position;
+                Instantiate(rockPrefab, j, Quaternion.identity);
+
+                OnObstacleSpawned?.Invoke(j, ObstacleType.Rock); //Notify indicators system
+            }
+
+        }
+    }
 }
+   
