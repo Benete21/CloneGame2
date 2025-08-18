@@ -251,6 +251,8 @@ MonoBehaviour:
   spawnIntervalMaxRock: 7
   spawnIntervalMinBird: 5
   spawnIntervalMaxBird: 7
+  spawnIntervalMinBirdRocks: 0
+  spawnIntervalMaxBirdRocks: 0
   SpawnPointsRock:
   - {fileID: 635419261}
   - {fileID: 1732637220}
@@ -258,7 +260,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  SpawnPointsBirdTop: []
+  SpawnPointsRockTop: []
   player: {fileID: 0}
+  playerCollider: {fileID: 0}
 --- !u!4 &107638476
 Transform:
   m_ObjectHideFlags: 0
@@ -458,6 +463,7 @@ MonoBehaviour:
   Hands: {fileID: 0}
   grabDistance: 0
   isHoldingOn: 0
+  LevelOb: {fileID: 0}
 --- !u!143 &123161093
 CharacterController:
   m_ObjectHideFlags: 0

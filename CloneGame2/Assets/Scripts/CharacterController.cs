@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
@@ -132,6 +133,18 @@ public class CharacterControls : MonoBehaviour
 
 
         if (statManagerScript.Stamina < 1)
+        {
+            CancelClimb();
+        }
+        
+    }
+    public void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.collider.CompareTag("Rocks"))
+        {
+            CancelClimb();
+        }
+        if (hit.collider.CompareTag("Birds"))
         {
             CancelClimb();
         }
