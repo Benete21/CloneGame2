@@ -53,6 +53,7 @@ public class CharacterControls : MonoBehaviour
 
     [Header("Level Obstacles")]
     public Level_Obstacles LevelOb;
+    public RisingFog fog;
 
 
 
@@ -160,22 +161,25 @@ public class CharacterControls : MonoBehaviour
         {
             LevelOb.StartBirdSpawn();
             other.gameObject.SetActive(false);
-            
+            fog.ContinueToNextHeight();
         }
         else if (other.CompareTag("Obstacle2"))
         {
             LevelOb.StartRockSpawn();
             print("AHAHAHAHHAH");
             other.gameObject.SetActive(false);
+            fog.ContinueToNextHeight();
         }
         else if (other.CompareTag("Obstacle3"))
         {
             LevelOb.StartBirdRocksSpawn();
             other.gameObject.SetActive(false);
+            fog.ContinueToNextHeight();
         }
         else if (other.CompareTag("Obstacle4"))
         {
             other.gameObject.SetActive(false);
+            fog.ContinueToNextHeight();
         }
     }
 
