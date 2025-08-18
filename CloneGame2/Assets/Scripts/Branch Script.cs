@@ -26,6 +26,6 @@ public class BranchScript : MonoBehaviour
         PlayerScript.LetGoOFbranch();
         yield return new WaitForSeconds(0.1f);
 
-        Destroy(gameObject);
+       gameObject.SetActive(false);
     }
 }

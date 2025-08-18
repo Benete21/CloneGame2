@@ -14,6 +14,7 @@ TagManager:
   - Obstacle3
   - Birds
   - Fire
+  - Fruit
   layers:
   - Default
   - TransparentFX

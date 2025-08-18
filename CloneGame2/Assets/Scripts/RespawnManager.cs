@@ -9,11 +9,14 @@ public class RespawnManager : MonoBehaviour
     private StatManager statManagerScript;
     [SerializeField]
     private int DeathCount;
+    private ItemRespawners ItemsSpawnerScript;
 
     private void Start()
     {
         controller = GetComponent<CharacterController>();
         statManagerScript = GetComponent<StatManager>();
+        ItemsSpawnerScript = GetComponent<ItemRespawners>();
+
     }
 
     private void Update()
@@ -23,6 +26,7 @@ public class RespawnManager : MonoBehaviour
             if (DeathCount < 3)
             {
                 Respawn();
+                ItemsSpawnerScript.RespawnItems();
             }
             else
             {
@@ -33,7 +37,7 @@ public class RespawnManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("CheckPoint"))
+        if (other.CompareTag("Fire"))
         {
             CheckPoint = other.transform;
         }
