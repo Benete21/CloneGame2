@@ -11,17 +11,17 @@ public class Level_Obstacles : MonoBehaviour
     public float spawnIntervalMaxRock; // Maximum time between spawns for rocks
     public float spawnIntervalMinBird;  // Minimum time between spawns for bird
     public float spawnIntervalMaxBird;  // Maximum time between spawns for bird
-    public List<Vector3> SpawnPointsRock = new List<Vector3>();
-    public List<Vector3> SpawnPointsBird = new List<Vector3>();
+    public List<GameObject> SpawnPointsRock = new List<GameObject>();
+    public List<GameObject> SpawnPointsBird = new List<GameObject>();
 
     public GameObject player;
 
     void Start()
     {
-       /* StartCoroutine(SpawnRocksCoroutine());
-        StartCoroutine(SpawnBirdCoroutine());*/
+       StartCoroutine(SpawnRocksCoroutine());
+        StartCoroutine(SpawnBirdCoroutine());
     }
-    public void OnTriggerEnter(Collider other)
+   /* public void OnTriggerEnter(Collider other)
     {
         player = other.gameObject;
         if (player.CompareTag ("Obstacle1"))
@@ -29,7 +29,7 @@ public class Level_Obstacles : MonoBehaviour
             StartCoroutine(SpawnRocksCoroutine());
             StartCoroutine(SpawnBirdCoroutine());
         }
-    }
+    }*/
     IEnumerator SpawnRocksCoroutine()
     {
         while (true)
@@ -39,9 +39,10 @@ public class Level_Obstacles : MonoBehaviour
             yield return new WaitForSeconds(randomTime);
 
             // Randomize X position
-            foreach (Vector3 i in SpawnPointsRock)
+            foreach (GameObject i in SpawnPointsRock)
             {
-                Instantiate(rockPrefab, i, Quaternion.identity);
+                Vector3 j = i.transform.position;
+                Instantiate(rockPrefab, j, Quaternion.identity);
             }
         }
 
@@ -55,9 +56,10 @@ public class Level_Obstacles : MonoBehaviour
             yield return new WaitForSeconds(randomTime);
 
             // Randomize X position
-            foreach (Vector3 i in SpawnPointsBird)
+            foreach (GameObject i in SpawnPointsBird)
             {
-                Instantiate(birdPrefab, i, Quaternion.identity);
+                Vector3 j = i.transform.position;
+                Instantiate(birdPrefab, j, Quaternion.identity);
             }
         }
     }
