@@ -12,7 +12,8 @@ public class Indicators : MonoBehaviour
 
     [Header("Settings")]
     public float edgePadding = 50f;
-    public float indicatorLifetime = 2f;
+    public float indicatorLifetime = 4f;
+    [Range(0.1f, 1f)] public float edgeBuffer = 0.9f; // 90% of screen
 
     private Camera mainCamera;
     private Transform player;
@@ -26,6 +27,7 @@ public class Indicators : MonoBehaviour
     void OnEnable()
     {
         Level_Obstacles.OnObstacleSpawned += HandleObstacleSpawned;
+        
     }
 
     void OnDisable()
