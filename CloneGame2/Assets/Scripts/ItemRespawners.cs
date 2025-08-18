@@ -8,11 +8,14 @@ public class ItemRespawners : MonoBehaviour
     private GameObject[] Items;
     [SerializeField]
     private GameObject[] Branches;
+    [SerializeField]
+    private GameObject[] Urchins;
 
     private void Start()
     {
         Items = GameObject.FindGameObjectsWithTag("Fruit");
         Branches = GameObject.FindGameObjectsWithTag("Branch");
+        Urchins = GameObject.FindGameObjectsWithTag("Urchin");
     }
 
     public void RespawnItems()
@@ -23,6 +26,10 @@ public class ItemRespawners : MonoBehaviour
         }
 
         foreach (var item in Branches)
+        {
+            item.gameObject.SetActive(true);
+        }
+        foreach(var item in Urchins)
         {
             item.gameObject.SetActive(true);
         }

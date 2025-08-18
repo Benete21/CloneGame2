@@ -148,24 +148,29 @@ public class CharacterControls : MonoBehaviour
         {
             CancelClimb();
         }
+        if (hit.collider.CompareTag("Urchin"))
+        {
+            statManagerScript.Urchin_Damage();
+            hit.gameObject.SetActive(false);
+        }
     }
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Obstacle1"))
         {
             LevelOb.StartBirdSpawn();
-            Destroy(this);
+            Destroy(other.gameObject);
         }
         else if (other.CompareTag("Obstacle2"))
         {
             LevelOb.StartRockSpawn();
             print("AHAHAHAHHAH");
-            Destroy(this);
+            Destroy(other.gameObject);
         }
         else if (other.CompareTag("Obstacle3"))
         {
             LevelOb.StartBirdRocksSpawn();
-            Destroy(this);
+            Destroy(other.gameObject);
         }
     }
 

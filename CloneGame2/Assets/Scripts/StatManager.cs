@@ -9,7 +9,7 @@ public class StatManager : MonoBehaviour
     public Slider StaminaSlider, HpSlider, HungerBarSlider;
     public float Stamina, HP;
     public bool IsClimbing, IsClimbingAndMoving, InFog;
-    public float MaxStamina, MaxHp, Hp, Hunger;
+    public float MaxStamina, MaxHp, Hp, Hunger, UrchinDam;
     [SerializeField]
     private float HungerDepletion;
     [SerializeField]
@@ -18,6 +18,7 @@ public class StatManager : MonoBehaviour
     [SerializeField]
     private int StaminaGainrate;
     private float HalfStamina;
+
     private void Start()
     {
         StartCoroutine(HungerBar());
@@ -59,7 +60,7 @@ public class StatManager : MonoBehaviour
         }
         else if (other.CompareTag("Fruit"))
         {
-            if(Hp <  MaxHp)
+            if (Hp < MaxHp)
             {
                 Hp += MaxHp * 0.3f;
                 if (Hp > MaxHp)
@@ -68,7 +69,7 @@ public class StatManager : MonoBehaviour
                 }
             }
 
-            if(Stamina < MaxStamina)
+            if (Stamina < MaxStamina)
             {
                 Stamina += MaxStamina * 0.5f;
                 if (Stamina > MaxStamina)
@@ -78,13 +79,13 @@ public class StatManager : MonoBehaviour
             }
 
             Hunger = 0;
-            
+
             other.gameObject.SetActive(false);
         }
         else if (other.CompareTag("Death_Zone"))
         {
             HitDeath_Zone();
-            print("Hit");
+            //print("Hit");
         }
     }
     public void OnTriggerExit(Collider other)
@@ -128,6 +129,10 @@ public class StatManager : MonoBehaviour
     public void HitDeath_Zone()
     {
         Hp -= MaxHp;
+    }
+    public void Urchin_Damage()
+    {
+        Hp -= UrchinDam;
     }
 
     public void LeapStaminaDepletion()
