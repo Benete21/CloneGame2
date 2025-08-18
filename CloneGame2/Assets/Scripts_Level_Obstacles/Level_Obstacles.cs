@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 using Random = UnityEngine.Random;
 
 
@@ -18,31 +19,42 @@ public class Level_Obstacles : MonoBehaviour
     public List<GameObject> SpawnPointsBird = new List<GameObject>();
 
     public GameObject player;
-
+    public Collider playerCollider;
     public static event Action<Vector3, ObstacleType> OnObstacleSpawned;
 
     public enum ObstacleType { Rock, Bird }
 
     void Start()
     {
+        playerCollider = player.GetComponent<Collider>();
         /* StartCoroutine(SpawnRocksCoroutine());
          StartCoroutine(SpawnBirdCoroutine());*/
+
     }
-    public void OnTriggerEnter(Collider other)
+    /*public void OnTriggerEnter(Collider other)
     {
-        player = other.gameObject;
-        if (player.CompareTag("Obstacle1"))
+        if (other.CompareTag("Obstacle1"))
         {
             StartCoroutine(SpawnBirdCoroutine());
         }
-        else if (player.CompareTag("Obstacle2"))
+        else if (other.CompareTag("Player"))
         {
             StartCoroutine(SpawnRocksCoroutine());
+            print("AHAHAHAHHAH");
         }
-        else if (player.CompareTag("Obstacle3"))
+        else if (other.CompareTag("Obstacle3"))
         {
 
         }
+    }*/
+
+    public void StartBirdSpawn()
+    {
+        StartCoroutine(SpawnBirdCoroutine());
+    }
+    public void StartRockSpawn()
+    {
+        StartCoroutine(SpawnRocksCoroutine());
     }
     IEnumerator SpawnRocksCoroutine()
     {

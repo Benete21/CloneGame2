@@ -50,6 +50,9 @@ public class CharacterControls : MonoBehaviour
     [SerializeField]
     private bool isHoldingOn;
 
+    [Header("Level Obstacles")]
+    public Level_Obstacles LevelOb;
+
 
 
     private void OnEnable()
@@ -133,7 +136,22 @@ public class CharacterControls : MonoBehaviour
             CancelClimb();
         }
     }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Obstacle1"))
+        {
+            LevelOb.StartBirdSpawn();
+        }
+        else if (other.CompareTag("Obstacle2"))
+        {
+            LevelOb.StartRockSpawn();
+            print("AHAHAHAHHAH");
+        }
+        else if (other.CompareTag("Obstacle3"))
+        {
 
+        }
+    }
 
     private void Awake()
     {

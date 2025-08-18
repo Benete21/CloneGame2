@@ -7,6 +7,11 @@ TagManager:
   - Gap
   - Branch
   - CheckPoint
+  - Rocks
+  - Fog
+  - Obstacle1
+  - Obstacle2
+  - Obstacle3
   layers:
   - Default
   - TransparentFX
