@@ -81,6 +81,11 @@ public class StatManager : MonoBehaviour
             
             other.gameObject.SetActive(false);
         }
+        else if (other.CompareTag("Death_Zone"))
+        {
+            HitDeath_Zone();
+            print("Hit");
+        }
     }
     public void OnTriggerExit(Collider other)
     {
@@ -118,6 +123,11 @@ public class StatManager : MonoBehaviour
     public void FogDamage()
     {
         Hp -= Time.deltaTime * 4 * DepletionRate;
+    }
+
+    public void HitDeath_Zone()
+    {
+        Hp -= MaxHp;
     }
 
     public void LeapStaminaDepletion()
