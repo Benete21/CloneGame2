@@ -159,18 +159,23 @@ public class CharacterControls : MonoBehaviour
         if (other.CompareTag("Obstacle1"))
         {
             LevelOb.StartBirdSpawn();
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
+            
         }
         else if (other.CompareTag("Obstacle2"))
         {
             LevelOb.StartRockSpawn();
             print("AHAHAHAHHAH");
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
         }
         else if (other.CompareTag("Obstacle3"))
         {
             LevelOb.StartBirdRocksSpawn();
-            Destroy(other.gameObject);
+            other.gameObject.SetActive(false);
+        }
+        else if (other.CompareTag("Obstacle4"))
+        {
+            other.gameObject.SetActive(false);
         }
     }
 
