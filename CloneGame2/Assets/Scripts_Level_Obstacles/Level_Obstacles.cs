@@ -1,7 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 public class Level_Obstacles : MonoBehaviour
 {
@@ -15,6 +18,10 @@ public class Level_Obstacles : MonoBehaviour
     public List<Vector3> SpawnPointsBird = new List<Vector3>();
 
     public GameObject player;
+
+    public static event Action<Vector3, ObstacleType> OnObstacleSpawned;
+
+    public enum ObstacleType { Rock, Bird }
 
     void Start()
     {
@@ -42,6 +49,8 @@ public class Level_Obstacles : MonoBehaviour
             foreach (Vector3 i in SpawnPointsRock)
             {
                 Instantiate(rockPrefab, i, Quaternion.identity);
+
+                OnObstacleSpawned?.Invoke(i, ObstacleType.Rock); //Notify indicators system
             }
         }
 
@@ -58,6 +67,7 @@ public class Level_Obstacles : MonoBehaviour
             foreach (Vector3 i in SpawnPointsBird)
             {
                 Instantiate(birdPrefab, i, Quaternion.identity);
+                OnObstacleSpawned?.Invoke(i, ObstacleType.Bird); //notify indicator system
             }
         }
     }
