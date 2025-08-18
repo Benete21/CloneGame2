@@ -6873,6 +6873,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 4402960603784798265, guid: 6d93b6d45f55dd14aa4a5120ca3f5596, type: 3}
+      propertyPath: ClimbSpeed
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 5676757986271841328, guid: 6d93b6d45f55dd14aa4a5120ca3f5596, type: 3}
       propertyPath: Stamina
       value: 80
@@ -6903,15 +6907,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8822809467689320762, guid: 6d93b6d45f55dd14aa4a5120ca3f5596, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 16.5
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 8822809467689320762, guid: 6d93b6d45f55dd14aa4a5120ca3f5596, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 264
+      value: 148.42
       objectReference: {fileID: 0}
     - target: {fileID: 8822809467689320762, guid: 6d93b6d45f55dd14aa4a5120ca3f5596, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 47.2
+      value: -27.84
       objectReference: {fileID: 0}
     - target: {fileID: 8822809467689320762, guid: 6d93b6d45f55dd14aa4a5120ca3f5596, type: 3}
       propertyPath: m_LocalRotation.w
@@ -38219,7 +38223,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.1382723, y: 160.6, z: -12.623183}
-  m_LocalScale: {x: 0.686513, y: 0.686513, z: 0.686513}
+  m_LocalScale: {x: 0.8030143, y: 0.8030143, z: 0.8030143}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2043607797}
@@ -40858,8 +40862,8 @@ Transform:
   m_GameObject: {fileID: 981035290}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -35.3, y: 466.6, z: 87.5}
-  m_LocalScale: {x: 1.6435, y: 1.6435, z: 1.6435}
+  m_LocalPosition: {x: -41.9, y: 519.7, z: 104.7}
+  m_LocalScale: {x: 1.9224019, y: 1.9224019, z: 1.9224019}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 433138166}
