@@ -17,6 +17,8 @@ TagManager:
   - Fruit
   - Death_Zone
   - Urchin
+  - Obstacle0
+  - Obstacle4
   layers:
   - Default
   - TransparentFX

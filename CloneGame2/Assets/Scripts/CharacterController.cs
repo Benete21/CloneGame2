@@ -157,6 +157,7 @@ public class CharacterControls : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
+
         if (other.CompareTag("Obstacle1"))
         {
             LevelOb.StartBirdSpawn();
