@@ -4485,7 +4485,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7390384289328860152, guid: a6b09c332df330f4abe93a502445522b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -6036,7 +6037,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2270824193821942488, guid: 906cce56a9e2b444ca0c55612166d15c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -27839,10 +27841,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7390384289328860152, guid: a6b09c332df330f4abe93a502445522b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8377706261531452631, guid: a6b09c332df330f4abe93a502445522b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2123043504}
   m_SourcePrefab: {fileID: 100100000, guid: a6b09c332df330f4abe93a502445522b, type: 3}
 --- !u!4 &607584094 stripped
 Transform:
@@ -43945,10 +43951,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2280123637450374210, guid: 3df6c2ccd2157144b9c7245fa7d973d4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6320983275595031118, guid: 3df6c2ccd2157144b9c7245fa7d973d4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1657971339}
   m_SourcePrefab: {fileID: 100100000, guid: 3df6c2ccd2157144b9c7245fa7d973d4, type: 3}
 --- !u!4 &985533078 stripped
 Transform:
@@ -54069,13 +54079,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7390384289328860152, guid: a6b09c332df330f4abe93a502445522b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8377706261531452631, guid: a6b09c332df330f4abe93a502445522b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1282776721}
+      addedObject: {fileID: 1282776723}
   m_SourcePrefab: {fileID: 100100000, guid: a6b09c332df330f4abe93a502445522b, type: 3}
 --- !u!4 &1226155318 stripped
 Transform:
@@ -56396,7 +56407,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8377706261531452631, guid: a6b09c332df330f4abe93a502445522b, type: 3}
   m_PrefabInstance: {fileID: 1226155317}
   m_PrefabAsset: {fileID: 0}
---- !u!135 &1282776721
+--- !u!135 &1282776723
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -56415,7 +56426,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 1
+  m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &1283537749
 PrefabInstance:
@@ -65476,6 +65487,32 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.030559862, y: 0.02846349, z: 0.0779278}
   m_Center: {x: 0.0011239331, y: 0.0006307918, z: -0.0015422143}
+--- !u!1 &1461104897 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4385503617074509324, guid: 906cce56a9e2b444ca0c55612166d15c, type: 3}
+  m_PrefabInstance: {fileID: 2052702288}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &1461104899
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1461104897}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1462005296
 GameObject:
   m_ObjectHideFlags: 0
@@ -74075,7 +74112,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7390384289328860152, guid: a6b09c332df330f4abe93a502445522b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -74264,6 +74302,32 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8751707329139076740, guid: ee44003f223dd594fae828b9ad8a23fe, type: 3}
   m_PrefabInstance: {fileID: 1644032619}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1657971337 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6320983275595031118, guid: 3df6c2ccd2157144b9c7245fa7d973d4, type: 3}
+  m_PrefabInstance: {fileID: 985533077}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &1657971339
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1657971337}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1659313513
 GameObject:
   m_ObjectHideFlags: 0
@@ -76501,7 +76565,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2280123637450374210, guid: 3df6c2ccd2157144b9c7245fa7d973d4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -81877,7 +81942,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2270824193821942488, guid: 906cce56a9e2b444ca0c55612166d15c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -86669,7 +86735,8 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2270824193821942488, guid: 906cce56a9e2b444ca0c55612166d15c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -90040,10 +90107,14 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Fruit
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2270824193821942488, guid: 906cce56a9e2b444ca0c55612166d15c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4385503617074509324, guid: 906cce56a9e2b444ca0c55612166d15c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1461104899}
   m_SourcePrefab: {fileID: 100100000, guid: 906cce56a9e2b444ca0c55612166d15c, type: 3}
 --- !u!4 &2052702289 stripped
 Transform:
@@ -94149,6 +94220,32 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2123043502 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8377706261531452631, guid: a6b09c332df330f4abe93a502445522b, type: 3}
+  m_PrefabInstance: {fileID: 607584093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!135 &2123043504
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2123043502}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2127852151
 GameObject:
   m_ObjectHideFlags: 0

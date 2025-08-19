@@ -18,13 +18,13 @@ public class StatManager : MonoBehaviour
     [SerializeField]
     private int StaminaGainrate;
     private float HalfStamina;
-
+    private float FallDamage;
     private void Start()
     {
         StartCoroutine(HungerBar());
     }
 
-    
+
 
     void Update()
     {
@@ -47,6 +47,37 @@ public class StatManager : MonoBehaviour
         HalfStamina = MaxStamina / 2;
 
         StaminaSlider.maxValue = MaxStamina;
+
+
+        //Fall Damage 
+        Ray ray = new Ray(transform.position, Vector3.down);
+        RaycastHit hit;
+        Debug.DrawRay(transform.position, Vector3.down, Color.red, 3);
+        if (Physics.Raycast(ray, out hit, 3))
+        {
+            if (hit.collider.gameObject != null)
+            {
+                if (FallDamage > 1)
+                {
+                    Hp -= FallDamage; 
+                }
+                FallDamage = 0;
+            }
+        }
+        else
+        {
+            if (!IsClimbingAndMoving || !IsClimbing)
+            {
+               FallDamage += Time.deltaTime;
+            }
+            else if (IsClimbing || IsClimbingAndMoving)
+            {
+                FallDamage = 0;
+            }
+        }
+        
+            
+
     }
     public void OnTriggerEnter(Collider other)
     {
@@ -57,6 +88,7 @@ public class StatManager : MonoBehaviour
         else if (other.CompareTag("Fire"))
         {
             Stamina = MaxStamina;
+            Hp = MaxHp;
         }
         else if (other.CompareTag("Fruit"))
         {
@@ -90,7 +122,7 @@ public class StatManager : MonoBehaviour
     }
     public void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("Fog"))
+        if (other.CompareTag("Fog"))
         {
             InFog = false;
         }

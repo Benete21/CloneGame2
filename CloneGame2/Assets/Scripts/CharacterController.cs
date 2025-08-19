@@ -20,7 +20,7 @@ public class CharacterControls : MonoBehaviour
     public Transform playerCamera;
     public Vector2 moveInput;
     private CharacterController characterController;
-    private Vector3 velocity;
+    public Vector3 velocity;
     private float gravity = -9.8f;
     [SerializeField] private float groundedGravity = -0.5f;
     [SerializeField] private float terminalVelocity = -50f;
@@ -112,8 +112,7 @@ public class CharacterControls : MonoBehaviour
             }    
         }
         
-
-
+      
         Move();
         LookAround();
         ClimbCheck();
@@ -303,7 +302,7 @@ public class CharacterControls : MonoBehaviour
     }
     void Jump()
     {
-        if (!isClimbing)
+        if (!CanClimb)
         {
             Ray ray = new Ray(transform.position, Vector3.down);
             RaycastHit hit;
