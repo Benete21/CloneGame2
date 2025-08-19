@@ -7,19 +7,11 @@ public class HowToPlay : MonoBehaviour
 {
     public void Return()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        
+            SceneManager.LoadScene(0);
         
 
-        if (currentSceneIndex - 1 == 0)
-        {
-            SceneManager.LoadScene(0);
-        }
-
-        else if (currentSceneIndex - 1 == 1)
-        {
-            SceneManager.LoadScene(1);
-
-        }
+      
                 
                 
 

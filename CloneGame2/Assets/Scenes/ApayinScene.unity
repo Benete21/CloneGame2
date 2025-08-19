@@ -1720,13 +1720,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39410e0663b6c7c4dae2e5907a93e59a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  detectionRadius: 100
+  sphereCastRadius: 4
+  maxDetectionDistance: 120
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  detectionDirections:
+  - {x: 0, y: 1, z: 0}
+  - {x: 1, y: 0, z: 0}
+  - {x: -1, y: 0, z: 0}
   boundaryPanel: {fileID: 1754214453}
-  indicatorParent: {fileID: 1754214453}
   rockIndicatorPrefab: {fileID: 2850331838871681145, guid: 316661e6450cd4e44b194805e1f2f8ca, type: 3}
   birdIndicatorPrefab: {fileID: 560778123184361289, guid: 75393d3852ce3b644a37d359e357448d, type: 3}
-  edgePadding: 50
   indicatorLifetime: 2
-  edgeBuffer: 0.9
+  edgePadding: 50
+  flashStartDistance: 30
+  flashInterval: 0.2
+  lockRockYAxis: 1
+  lockBirdXAxis: 1
+  lockedPositionOffset: -150
+  screenEntryThreshold: 0.5
+  destroyDelayAfterScreenEntry: 0.05
 --- !u!1 &105489208
 GameObject:
   m_ObjectHideFlags: 0
@@ -12043,7 +12058,7 @@ Transform:
   m_GameObject: {fileID: 628763417}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.79, y: 16.96, z: -1.2}
+  m_LocalPosition: {x: 2.37, y: 16.96, z: -2.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

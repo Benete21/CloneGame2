@@ -21,9 +21,20 @@ public class Indicators : MonoBehaviour
     public GameObject rockIndicatorPrefab;
     public GameObject birdIndicatorPrefab;
     public float indicatorLifetime = 5f;
-    public float edgePadding = 30f;
+    public float edgePadding = 10f;
     public float flashStartDistance = 10f;
     public float flashInterval = 0.3f;
+
+    [Header("Position Locking")]
+    public bool lockRockYAxis = true;
+    public bool lockBirdXAxis = true;
+    public float lockedPositionOffset = 50f;
+
+    [Header("Screen Entry Detection")]
+    public float screenEntryThreshold = 0.05f;
+    public float destroyDelayAfterScreenEntry = 0.05f; // Destroy 1 second after entering screen
+    private Dictionary<Transform, bool> obstacleOnScreen = new Dictionary<Transform, bool>();
+    private Dictionary<Transform, Coroutine> destroyCoroutines = new Dictionary<Transform, Coroutine>();
 
     private Camera mainCamera;
     private Transform player;
@@ -40,7 +51,8 @@ public class Indicators : MonoBehaviour
     void Update()
     {
         CheckForObstacles();
-        CleanUpDestroyedIndicators();
+        CleanUpDestroyedData();
+
     }
 
     void CleanUpDestroyedIndicators()
@@ -89,7 +101,7 @@ public class Indicators : MonoBehaviour
                 }
             }
         }
-
+    }
         void CreateIndicator(Transform obstacle)
         {
             Level_Obstacles.ObstacleType type = obstacle.CompareTag("Rocks")
@@ -109,8 +121,8 @@ public class Indicators : MonoBehaviour
 
             while (obstacle != null && Vector3.Distance(player.position, obstacle.position) <= detectionRadius * 1.2f)
             {
-                // Update position
-                UpdateIndicatorPosition(indicator, obstacle.position);
+                // Update position and check screen entry
+                UpdateIndicatorPosition(indicator, obstacle);
 
                 // Check for flashing
                 float distance = Vector3.Distance(player.position, obstacle.position);
@@ -133,7 +145,7 @@ public class Indicators : MonoBehaviour
             {
                 Destroy(indicator.gameObject);
             }
-            activeIndicators.Remove(obstacle);
+            CleanupObstacleData(obstacle);
         }
 
         IEnumerator FlashIndicator(Image image)
@@ -148,33 +160,121 @@ public class Indicators : MonoBehaviour
             }
         }
 
-        void UpdateIndicatorPosition(RectTransform indicator, Vector3 worldPos)
+        void UpdateIndicatorPosition(RectTransform indicator, Transform obstacle)
         {
-            Vector3 screenPoint = mainCamera.WorldToScreenPoint(worldPos);
+            Vector3 viewportPoint = mainCamera.WorldToViewportPoint(obstacle.position);
+            bool isOnScreen = IsOnScreen(viewportPoint);
+
+            // Initialize tracking if new obstacle
+            if (!obstacleOnScreen.ContainsKey(obstacle))
+            {
+                obstacleOnScreen[obstacle] = false;
+            }
+
+            // Check if obstacle just entered screen
+            if (isOnScreen && !obstacleOnScreen[obstacle])
+            {
+                // Start destroy countdown
+                if (destroyCoroutines.ContainsKey(obstacle))
+                {
+                    StopCoroutine(destroyCoroutines[obstacle]);
+                }
+                destroyCoroutines[obstacle] = StartCoroutine(DestroyIndicatorAfterDelay(indicator, obstacle, destroyDelayAfterScreenEntry));
+            }
+            obstacleOnScreen[obstacle] = isOnScreen;
+
             Vector2 localPos;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 boundaryPanel,
-                screenPoint,
+                mainCamera.WorldToScreenPoint(obstacle.position),
                 null,
                 out localPos);
 
+            // Apply boundary clamping
             localPos.x = Mathf.Clamp(localPos.x, -panelHalfSize.x + edgePadding, panelHalfSize.x - edgePadding);
             localPos.y = Mathf.Clamp(localPos.y, -panelHalfSize.y + edgePadding, panelHalfSize.y - edgePadding);
 
             indicator.anchoredPosition = localPos;
+            
+        }
 
-            if (screenPoint.z < 0 ||
-                screenPoint.x < 0 || screenPoint.x > Screen.width ||
-                screenPoint.y < 0 || screenPoint.y > Screen.height)
+
+        IEnumerator DestroyIndicatorAfterDelay(RectTransform indicator, Transform obstacle, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            if (indicator != null)
             {
-                Vector3 dir = (worldPos - player.position).normalized;
-                indicator.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+                Destroy(indicator.gameObject);
             }
-            else
+            CleanupObstacleData(obstacle);
+        }
+
+        bool IsOnScreen(Vector3 viewportPoint)
+        {
+            return viewportPoint.z > 0 &&
+                   viewportPoint.x > screenEntryThreshold &&
+                   viewportPoint.x < 1 - screenEntryThreshold &&
+                   viewportPoint.y > screenEntryThreshold &&
+                   viewportPoint.y < 1 - screenEntryThreshold;
+        }
+
+
+        void CleanUpDestroyedData()
+        {
+            // Clean up obstacles that were destroyed
+            List<Transform> destroyedObstacles = new List<Transform>();
+            foreach (var obstacle in activeIndicators.Keys)
             {
-                indicator.localEulerAngles = Vector3.zero;
+                if (obstacle == null) // Obstacle was destroyed
+                {
+                    destroyedObstacles.Add(obstacle);
+                }
+            }
+
+            // Clean up indicators that were destroyed
+            List<Transform> destroyedIndicators = new List<Transform>();
+            foreach (var pair in activeIndicators)
+            {
+                if (pair.Value == null) // Indicator was destroyed
+                {
+                    destroyedIndicators.Add(pair.Key);
+                }
+            }
+
+            // Remove all destroyed entries
+            foreach (Transform obstacle in destroyedObstacles)
+            {
+                CleanupObstacleData(obstacle);
+            }
+            foreach (Transform obstacle in destroyedIndicators)
+            {
+                CleanupObstacleData(obstacle);
             }
         }
+
+        void CleanupObstacleData(Transform obstacle)
+        {
+            if (obstacle != null)
+            {
+                // Stop any running destroy coroutine
+                if (destroyCoroutines.TryGetValue(obstacle, out Coroutine coroutine))
+                {
+                    StopCoroutine(coroutine);
+                    destroyCoroutines.Remove(obstacle);
+                }
+            }
+
+            // Remove from all dictionaries
+            obstacleOnScreen.Remove(obstacle);
+            activeIndicators.Remove(obstacle);
+            destroyCoroutines.Remove(obstacle);
+        }
+
+
+
+
+
 
         GameObject GetPrefab(Level_Obstacles.ObstacleType type) =>
             type == Level_Obstacles.ObstacleType.Rock ? rockIndicatorPrefab : birdIndicatorPrefab;
@@ -198,5 +298,5 @@ public class Indicators : MonoBehaviour
             }
         }
 
-    }
+    
 }

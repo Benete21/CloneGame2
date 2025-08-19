@@ -12,6 +12,7 @@ TagManager:
   - Obstacle1
   - Obstacle2
   - Obstacle3
+  - Bird
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - obstacles
   - 
   - 
   - 
