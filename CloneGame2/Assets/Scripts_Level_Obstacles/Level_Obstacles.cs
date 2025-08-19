@@ -15,7 +15,7 @@ public class Level_Obstacles : MonoBehaviour
     public float spawnIntervalMaxRock; // Maximum time between spawns for rocks
     public float spawnIntervalMinBird;  // Minimum time between spawns for bird
     public float spawnIntervalMaxBird;  // Maximum time between spawns for bird
-    public float spawnIntervalMinBirdRocks;  // Minimum time between spawns for bird
+    public float spawnIntervalMinBirdRocks;  // Minimum time between spawns for rocks
     public float spawnIntervalMaxBirdRocks;  // Maximum time between spawns for bird
     public List<GameObject> SpawnPointsRock = new List<GameObject>();
     public List<GameObject> SpawnPointsBird = new List<GameObject>();

@@ -9,24 +9,26 @@ public class Pause : MonoBehaviour
 
     public Button pause;
     public GameObject pauseMenu;
-    public GameObject howToPlay;
+    //public Canvas healthbars;
+ 
     public void ReturnToMenu()
     {
-        SceneManager.LoadSceneAsync(0);
-        
-    } public void HowToPlay()
+        SceneManager.LoadSceneAsync(0);   
+    } 
+
+     void Update()
     {
-       howToPlay.SetActive(true);
-       pause.gameObject.SetActive(false);
-       pauseMenu.SetActive(false);
-       Time.timeScale = 0;
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseB(); // Call your function
+        }
 
-
+       
     }
 
     public void Return()
     {
-        howToPlay.SetActive(false);
+        
         pauseMenu.SetActive(true);
         pause.gameObject.SetActive(false);
         Time.timeScale = 0;
@@ -45,6 +47,7 @@ public class Pause : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;
+       // healthbars.gameObject.SetActive(true);
     }
 
     public void PauseB()
@@ -55,6 +58,8 @@ public class Pause : MonoBehaviour
         pauseMenu.SetActive(true);
 
         Time.timeScale = 0f;   
+
+        //healthbars.gameObject.SetActive(false);
     }
 
    
