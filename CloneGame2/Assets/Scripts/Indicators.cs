@@ -55,28 +55,7 @@ public class Indicators : MonoBehaviour
 
     }
 
-    void CleanUpDestroyedIndicators()
-    {
-        List<Transform> toRemove = new List<Transform>();
-
-        foreach (var pair in activeIndicators)
-        {
-            if (pair.Key == null || pair.Value == null) // Obstacle or indicator was destroyed
-            {
-                toRemove.Add(pair.Key);
-            }
-            else if (Vector3.Distance(player.position, pair.Key.position) > detectionRadius * 1.2f)
-            {
-                Destroy(pair.Value);
-                toRemove.Add(pair.Key);
-            }
-        }
-
-        foreach (Transform key in toRemove)
-        {
-            activeIndicators.Remove(key);
-        }
-    }
+   
 
 
     void CheckForObstacles()
@@ -126,16 +105,21 @@ public class Indicators : MonoBehaviour
 
                 // Check for flashing
                 float distance = Vector3.Distance(player.position, obstacle.position);
-                if (distance <= flashStartDistance && !shouldFlash)
-                {
-                    shouldFlash = true;
-                    StartCoroutine(FlashIndicator(indicatorImage));
-                }
-                else if (distance > flashStartDistance && shouldFlash)
-                {
-                    shouldFlash = false;
-                    indicatorImage.color = originalColor;
-                }
+            if (distance <= flashStartDistance && !shouldFlash)
+            {
+                shouldFlash = true;
+
+                StartCoroutine(FlashIndicator(indicatorImage));
+                
+            }
+
+
+            else if (distance > flashStartDistance && shouldFlash)
+            {
+                shouldFlash = false;
+                indicatorImage.color = originalColor;
+                StopAllCoroutines();
+            }
 
                 yield return null;
             }
@@ -150,14 +134,25 @@ public class Indicators : MonoBehaviour
 
         IEnumerator FlashIndicator(Image image)
         {
-            Color originalColor = image.color;
+
+        if (image == null) yield break;
+       
+
+        Color originalColor = image.color;
+
             while (image != null)
             {
-                image.gameObject.SetActive(false);
-                yield return new WaitForSeconds(flashInterval);
-                image.gameObject.SetActive(true);
-                yield return new WaitForSeconds(flashInterval);
-            }
+            if (image.gameObject == null) yield break;
+            image.gameObject.SetActive(false);
+
+            yield return new WaitForSeconds(flashInterval);
+            if (image == null) yield break;
+
+            if (image.gameObject == null) yield break;
+            image.gameObject.SetActive(true);
+
+            yield return new WaitForSeconds(flashInterval);
+        }
         }
 
         void UpdateIndicatorPosition(RectTransform indicator, Transform obstacle)

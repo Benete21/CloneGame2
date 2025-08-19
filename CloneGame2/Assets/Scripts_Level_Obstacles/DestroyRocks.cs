@@ -7,7 +7,7 @@ public class DestroyRocks : MonoBehaviour
     public GameObject rockPrefab;
     void Start()
     {
-        Destroy(rockPrefab, 5);
+        Destroy(rockPrefab, 3);
     }
 
 }

@@ -12,7 +12,7 @@ public class Birds : MonoBehaviour
     void Start()
     {
         startPosition = transform.position; // Store the initial position
-        Destroy(birdPrefab, 5);
+        Destroy(birdPrefab, 2);
     }
 
     void Update()
