@@ -118,6 +118,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ba4ea26a27f1fd449f3961d460707af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 7
-  moveDistance: 10
+  moveSpeed: 2
+  moveDistance: 14
   birdPrefab: {fileID: 7800636566588971160}
