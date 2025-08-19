@@ -5,96 +5,198 @@ using UnityEngine.UI;
 
 public class Indicators : MonoBehaviour
 {
-    [Header("UI References")]
-    public RectTransform indicatorParent;
+    [Header("Detection Settings")]
+    public float detectionRadius = 40f;
+    public float sphereCastRadius = 4f;
+    public float maxDetectionDistance = 70f;
+    public LayerMask obstacleLayer;
+    public Vector3[] detectionDirections = {
+        Vector3.up,        // Top
+        Vector3.right,     // Right
+        Vector3.left       // Left
+    };
+
+    [Header("Indicator Settings")]
+    public RectTransform boundaryPanel;
     public GameObject rockIndicatorPrefab;
     public GameObject birdIndicatorPrefab;
-
-    [Header("Settings")]
-    public float edgePadding = 50f;
-    public float indicatorLifetime = 2f;
+    public float indicatorLifetime = 5f;
+    public float edgePadding = 30f;
+    public float flashStartDistance = 10f;
+    public float flashInterval = 0.3f;
 
     private Camera mainCamera;
     private Transform player;
+    private Vector2 panelHalfSize;
+    private Dictionary<Transform, GameObject> activeIndicators = new Dictionary<Transform, GameObject>();
 
     void Awake()
     {
         mainCamera = Camera.main;
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        panelHalfSize = boundaryPanel.rect.size * 0.5f;
     }
 
-    void OnEnable()
+    void Update()
     {
-        Level_Obstacles.OnObstacleSpawned += HandleObstacleSpawned;
+        CheckForObstacles();
+        CleanUpDestroyedIndicators();
     }
 
-    void OnDisable()
+    void CleanUpDestroyedIndicators()
     {
-        Level_Obstacles.OnObstacleSpawned -= HandleObstacleSpawned;
-    }
+        List<Transform> toRemove = new List<Transform>();
 
-
-
-    void HandleObstacleSpawned(Vector3 spawnPosition, Level_Obstacles.ObstacleType type)
-    {
-        // Create appropriate indicator
-        GameObject indicatorPrefab = type == Level_Obstacles.ObstacleType.Rock
-            ? rockIndicatorPrefab
-            : birdIndicatorPrefab;
-
-        GameObject indicator = Instantiate(indicatorPrefab, indicatorParent);
-        StartCoroutine(UpdateIndicatorPosition(indicator.GetComponent<RectTransform>(), spawnPosition));
-        Destroy(indicator, indicatorLifetime);
-    }
-
-    IEnumerator UpdateIndicatorPosition(RectTransform indicator, Vector3 worldPosition)
-    {
-        while (indicator != null)
+        foreach (var pair in activeIndicators)
         {
-            // Convert world position to screen position
-            Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPosition);
-
-            // Check if obstacle is on screen
-            bool onScreen = screenPos.z > 0 &&
-                          screenPos.x > 0 && screenPos.x < Screen.width &&
-                          screenPos.y > 0 && screenPos.y < Screen.height;
-
-            if (onScreen)
+            if (pair.Key == null || pair.Value == null) // Obstacle or indicator was destroyed
             {
-                // If on screen, show indicator at obstacle position
-                indicator.gameObject.SetActive(true);
-                indicator.anchoredPosition = screenPos - new Vector3(Screen.width / 2, Screen.height / 2);
+                toRemove.Add(pair.Key);
             }
-            else
+            else if (Vector3.Distance(player.position, pair.Key.position) > detectionRadius * 1.2f)
             {
-                // If off screen, show at screen edge pointing to obstacle
-                indicator.gameObject.SetActive(true);
-                Vector3 dir = (worldPosition - player.position).normalized;
-                dir.z = 0;
-                Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2);
-                Vector3 screenEdge = GetScreenEdgePosition(dir, screenCenter);
-                indicator.anchoredPosition = screenEdge - screenCenter;
-
-                // Rotate arrow to point toward obstacle
-                if (indicator.TryGetComponent<RectTransform>(out var rt))
-                {
-                    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-                    rt.localEulerAngles = new Vector3(0, 0, angle);
-                }
+                Destroy(pair.Value);
+                toRemove.Add(pair.Key);
             }
+        }
 
-            yield return null;
+        foreach (Transform key in toRemove)
+        {
+            activeIndicators.Remove(key);
         }
     }
 
-    Vector3 GetScreenEdgePosition(Vector3 direction, Vector3 screenCenter)
+
+    void CheckForObstacles()
     {
-        direction.Normalize();
-        float ratio = (float)Screen.width / Screen.height;
-        Vector3 multipliedDir = new Vector3(direction.x * ratio, direction.y, 0).normalized;
+        foreach (Vector3 direction in detectionDirections)
+        {
+            RaycastHit[] hits = Physics.SphereCastAll(
+                player.position + direction * 2f, // Offset from player
+                sphereCastRadius,
+                direction,
+                maxDetectionDistance,
+                obstacleLayer);
 
-        float screenRadius = Mathf.Min(Screen.width, Screen.height) / 2 - edgePadding;
-        return screenCenter + multipliedDir * screenRadius;
+            foreach (RaycastHit hit in hits)
+            {
+                if (Vector3.Distance(player.position, hit.point) <= detectionRadius)
+                {
+                    if (!activeIndicators.ContainsKey(hit.transform))
+                    {
+                        CreateIndicator(hit.transform);
+                    }
+                }
+            }
+        }
+
+        void CreateIndicator(Transform obstacle)
+        {
+            Level_Obstacles.ObstacleType type = obstacle.CompareTag("Rocks")
+                ? Level_Obstacles.ObstacleType.Rock
+                : Level_Obstacles.ObstacleType.Bird;
+
+            GameObject indicator = Instantiate(GetPrefab(type), boundaryPanel);
+            activeIndicators.Add(obstacle, indicator);
+            StartCoroutine(UpdateIndicator(indicator.GetComponent<RectTransform>(), obstacle));
+        }
+
+        IEnumerator UpdateIndicator(RectTransform indicator, Transform obstacle)
+        {
+            Image indicatorImage = indicator.GetComponent<Image>();
+            Color originalColor = indicatorImage.color;
+            bool shouldFlash = false;
+
+            while (obstacle != null && Vector3.Distance(player.position, obstacle.position) <= detectionRadius * 1.2f)
+            {
+                // Update position
+                UpdateIndicatorPosition(indicator, obstacle.position);
+
+                // Check for flashing
+                float distance = Vector3.Distance(player.position, obstacle.position);
+                if (distance <= flashStartDistance && !shouldFlash)
+                {
+                    shouldFlash = true;
+                    StartCoroutine(FlashIndicator(indicatorImage));
+                }
+                else if (distance > flashStartDistance && shouldFlash)
+                {
+                    shouldFlash = false;
+                    indicatorImage.color = originalColor;
+                }
+
+                yield return null;
+            }
+
+            // Clean up
+            if (indicator != null)
+            {
+                Destroy(indicator.gameObject);
+            }
+            activeIndicators.Remove(obstacle);
+        }
+
+        IEnumerator FlashIndicator(Image image)
+        {
+            Color originalColor = image.color;
+            while (image != null)
+            {
+                image.gameObject.SetActive(false);
+                yield return new WaitForSeconds(flashInterval);
+                image.gameObject.SetActive(true);
+                yield return new WaitForSeconds(flashInterval);
+            }
+        }
+
+        void UpdateIndicatorPosition(RectTransform indicator, Vector3 worldPos)
+        {
+            Vector3 screenPoint = mainCamera.WorldToScreenPoint(worldPos);
+            Vector2 localPos;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                boundaryPanel,
+                screenPoint,
+                null,
+                out localPos);
+
+            localPos.x = Mathf.Clamp(localPos.x, -panelHalfSize.x + edgePadding, panelHalfSize.x - edgePadding);
+            localPos.y = Mathf.Clamp(localPos.y, -panelHalfSize.y + edgePadding, panelHalfSize.y - edgePadding);
+
+            indicator.anchoredPosition = localPos;
+
+            if (screenPoint.z < 0 ||
+                screenPoint.x < 0 || screenPoint.x > Screen.width ||
+                screenPoint.y < 0 || screenPoint.y > Screen.height)
+            {
+                Vector3 dir = (worldPos - player.position).normalized;
+                indicator.localEulerAngles = new Vector3(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+            }
+            else
+            {
+                indicator.localEulerAngles = Vector3.zero;
+            }
+        }
+
+        GameObject GetPrefab(Level_Obstacles.ObstacleType type) =>
+            type == Level_Obstacles.ObstacleType.Rock ? rockIndicatorPrefab : birdIndicatorPrefab;
+
+        void OnDrawGizmosSelected()
+        {
+            if (player != null)
+            {
+
+                foreach (Vector3 direction in detectionDirections)
+                {
+                    Vector3 origin = player.position + direction * 2f;
+                    Gizmos.DrawWireSphere(origin, sphereCastRadius);
+                    Gizmos.DrawLine(origin, origin + direction * maxDetectionDistance);
+
+                    // Visualize the actual detection radius
+                    Gizmos.color = Color.red;
+                    Gizmos.DrawWireSphere(player.position, detectionRadius);
+                    Gizmos.color = Color.yellow;
+                }
+            }
+        }
+
     }
-
 }
