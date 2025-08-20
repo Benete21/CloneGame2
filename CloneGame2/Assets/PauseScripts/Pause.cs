@@ -7,51 +7,66 @@ using UnityEngine.UI;
 public class Pause : MonoBehaviour
 {
 
-    public Button pause;
     public GameObject pauseMenu;
-    public GameObject howToPlay;
+    public Button resumeButton;
+    public Button restartButton;
+    public Button menuButton;
+    public bool isPaused;
+
+    private void Start()
+    {
+        isPaused = false;
+        pauseMenu.SetActive(false);
+
+        // Setup button listeners
+        resumeButton.onClick.AddListener(Play);
+        restartButton.onClick.AddListener(Restart);
+        menuButton.onClick.AddListener(ReturnToMenu);
+    }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            PauseB();
+            if (!isPaused)
+            {
+                PauseGame();
+            }
+            else
+            {
+                Play();
+            }
         }
     }
+
     public void ReturnToMenu()
     {
+        Time.timeScale = 1f;
         SceneManager.LoadSceneAsync(0);
-        
-    } 
-
-   
-    
+    }
 
     public void Play()
     {
-        pause.gameObject.SetActive(true);
+        isPaused = false;
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
-
     }
 
     public void Restart()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    public void PauseB()
+    public void PauseGame()
     {
-        
-        pause.gameObject.SetActive(false);
-
+        isPaused = true;
         pauseMenu.SetActive(true);
-
-        Time.timeScale = 0f;   
+        Time.timeScale = 0f;
     }
+}
 
    
 
 
-}
+
