@@ -7,7 +7,13 @@ public class CampTutorial : MonoBehaviour
     public GameObject player;
     public GameObject campTutorial;
     public CharacterController characterController;
+    private BoxCollider col;
 
+
+    private void Start()
+    {
+        col = GetComponent<BoxCollider>();
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other = player.GetComponent<Collider>())
@@ -30,8 +36,8 @@ public class CampTutorial : MonoBehaviour
         //Time.timeScale = 1f;
         //give player input back
         characterController.enabled = true;
-        Destroy(campTutorial);
-        Destroy(this.gameObject);
+        campTutorial.SetActive(false);
+        col.enabled = false;
         
     }
 }

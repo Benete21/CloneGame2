@@ -10,6 +10,7 @@ public class RespawnManager : MonoBehaviour
     [SerializeField]
     private int DeathCount;
     private ItemRespawners ItemsSpawnerScript;
+    public GameObject LoseScreen;
 
     private void Start()
     {
@@ -64,5 +65,7 @@ public class RespawnManager : MonoBehaviour
     void GameOver()
     {
         Debug.Log("GameOver");
+        LoseScreen.SetActive(true);
+        Time.timeScale = 0;
     }
 }
