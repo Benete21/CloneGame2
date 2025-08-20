@@ -155,46 +155,64 @@ public class Indicators : MonoBehaviour
         }
         }
 
-        void UpdateIndicatorPosition(RectTransform indicator, Transform obstacle)
+    void UpdateIndicatorPosition(RectTransform indicator, Transform obstacle)
+    {
+        Vector3 viewportPoint = mainCamera.WorldToViewportPoint(obstacle.position);
+        bool isOnScreen = IsOnScreen(viewportPoint);
+
+        // Initialize tracking if new obstacle
+        if (!obstacleOnScreen.ContainsKey(obstacle))
         {
-            Vector3 viewportPoint = mainCamera.WorldToViewportPoint(obstacle.position);
-            bool isOnScreen = IsOnScreen(viewportPoint);
-
-            // Initialize tracking if new obstacle
-            if (!obstacleOnScreen.ContainsKey(obstacle))
-            {
-                obstacleOnScreen[obstacle] = false;
-            }
-
-            // Check if obstacle just entered screen
-            if (isOnScreen && !obstacleOnScreen[obstacle])
-            {
-                // Start destroy countdown
-                if (destroyCoroutines.ContainsKey(obstacle))
-                {
-                    StopCoroutine(destroyCoroutines[obstacle]);
-                }
-                destroyCoroutines[obstacle] = StartCoroutine(DestroyIndicatorAfterDelay(indicator, obstacle, destroyDelayAfterScreenEntry));
-            }
-            obstacleOnScreen[obstacle] = isOnScreen;
-
-            Vector2 localPos;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                boundaryPanel,
-                mainCamera.WorldToScreenPoint(obstacle.position),
-                null,
-                out localPos);
-
-            // Apply boundary clamping
-            localPos.x = Mathf.Clamp(localPos.x, -panelHalfSize.x + edgePadding, panelHalfSize.x - edgePadding);
-            localPos.y = Mathf.Clamp(localPos.y, -panelHalfSize.y + edgePadding, panelHalfSize.y - edgePadding);
-
-            indicator.anchoredPosition = localPos;
-            
+            obstacleOnScreen[obstacle] = false;
         }
 
+        // Check if obstacle just entered screen
+        if (isOnScreen && !obstacleOnScreen[obstacle])
+        {
+            // Start destroy countdown
+            if (destroyCoroutines.ContainsKey(obstacle))
+            {
+                StopCoroutine(destroyCoroutines[obstacle]);
+            }
+            destroyCoroutines[obstacle] = StartCoroutine(DestroyIndicatorAfterDelay(indicator, obstacle, destroyDelayAfterScreenEntry));
+        }
+        obstacleOnScreen[obstacle] = isOnScreen;
 
-        IEnumerator DestroyIndicatorAfterDelay(RectTransform indicator, Transform obstacle, float delay)
+        Vector2 localPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            boundaryPanel,
+            mainCamera.WorldToScreenPoint(obstacle.position),
+            null,
+            out localPos);
+
+        // GET OBSTACLE TYPE FOR AXIS LOCKING
+        bool isRock = obstacle.CompareTag("Rocks");
+        bool isBird = obstacle.CompareTag("Birds"); // Make sure this tag matches your bird prefab
+
+        // APPLY AXIS LOCKING LOGIC
+        if (lockRockYAxis && isRock)
+        {
+            // For rocks: Lock Y position, only move on X axis
+            float clampedX = Mathf.Clamp(localPos.x, -panelHalfSize.x + edgePadding, panelHalfSize.x - edgePadding);
+            localPos = new Vector2(clampedX, lockedPositionOffset * Mathf.Sign(localPos.x));
+        }
+        else if (lockBirdXAxis && isBird)
+        {
+            // For birds: Lock X position, only move on Y axis
+            float clampedY = Mathf.Clamp(localPos.y, -panelHalfSize.y + edgePadding, panelHalfSize.y - edgePadding);
+            localPos = new Vector2(lockedPositionOffset * Mathf.Sign(localPos.y), clampedY);
+        }
+        else
+        {
+            // Default clamping if not locking axes
+            localPos.x = Mathf.Clamp(localPos.x, -panelHalfSize.x + edgePadding, panelHalfSize.x - edgePadding);
+            localPos.y = Mathf.Clamp(localPos.y, -panelHalfSize.y + edgePadding, panelHalfSize.y - edgePadding);
+        }
+
+        indicator.anchoredPosition = localPos;
+    }
+
+    IEnumerator DestroyIndicatorAfterDelay(RectTransform indicator, Transform obstacle, float delay)
         {
             yield return new WaitForSeconds(delay);
 

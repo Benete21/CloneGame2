@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5040486142631418669}
   - component: {fileID: 8691202810591224184}
   - component: {fileID: 6502246140795481203}
-  m_Layer: 6
+  m_Layer: 3
   m_Name: Bird
   m_TagString: Birds
   m_Icon: {fileID: 0}
@@ -30,8 +30,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 15.661567, y: 17.061617, z: 66.42501}
-  m_LocalScale: {x: 1.0952933, y: 0.39189, z: 0.39189}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0.2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

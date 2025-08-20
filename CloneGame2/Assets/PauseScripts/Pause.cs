@@ -10,27 +10,21 @@ public class Pause : MonoBehaviour
     public Button pause;
     public GameObject pauseMenu;
     public GameObject howToPlay;
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            PauseB();
+        }
+    }
     public void ReturnToMenu()
     {
         SceneManager.LoadSceneAsync(0);
         
-    } public void HowToPlay()
-    {
-       howToPlay.SetActive(true);
-       pause.gameObject.SetActive(false);
-       pauseMenu.SetActive(false);
-       Time.timeScale = 0;
+    } 
 
-
-    }
-
-    public void Return()
-    {
-        howToPlay.SetActive(false);
-        pauseMenu.SetActive(true);
-        pause.gameObject.SetActive(false);
-        Time.timeScale = 0;
-    }
+   
     
 
     public void Play()

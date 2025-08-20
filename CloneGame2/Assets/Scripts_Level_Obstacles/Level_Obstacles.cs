@@ -31,8 +31,8 @@ public class Level_Obstacles : MonoBehaviour
     void Start()
     {
         playerCollider = player.GetComponent<Collider>();
-        // StartCoroutine(SpawnRocksCoroutine());
-         StartCoroutine(SpawnBirdCoroutine());
+         StartCoroutine(SpawnRocksCoroutine());
+         //StartCoroutine(SpawnBirdCoroutine());
 
     }
     /*public void OnTriggerEnter(Collider other)
