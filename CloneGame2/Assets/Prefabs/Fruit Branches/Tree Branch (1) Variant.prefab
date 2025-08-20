@@ -149,16 +149,28 @@ PrefabInstance:
       value: Tree Branch (1) Variant
       objectReference: {fileID: 0}
     - target: {fileID: 4546706684840360392, guid: 82f8cb5ca95cc1f41b7348e51f32df87, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.5201826
+      objectReference: {fileID: 0}
+    - target: {fileID: 4546706684840360392, guid: 82f8cb5ca95cc1f41b7348e51f32df87, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.5201826
+      objectReference: {fileID: 0}
+    - target: {fileID: 4546706684840360392, guid: 82f8cb5ca95cc1f41b7348e51f32df87, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.5201826
+      objectReference: {fileID: 0}
+    - target: {fileID: 4546706684840360392, guid: 82f8cb5ca95cc1f41b7348e51f32df87, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 24.431728
+      value: 24.231377
       objectReference: {fileID: 0}
     - target: {fileID: 4546706684840360392, guid: 82f8cb5ca95cc1f41b7348e51f32df87, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -15.102192
+      value: -107.25409
       objectReference: {fileID: 0}
     - target: {fileID: 4546706684840360392, guid: 82f8cb5ca95cc1f41b7348e51f32df87, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 18.013184
+      value: -14.898029
       objectReference: {fileID: 0}
     - target: {fileID: 4546706684840360392, guid: 82f8cb5ca95cc1f41b7348e51f32df87, type: 3}
       propertyPath: m_LocalRotation.w
