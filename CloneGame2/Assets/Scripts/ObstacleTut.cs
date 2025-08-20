@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CampTutorial : MonoBehaviour
+public class ObstacleTut : MonoBehaviour
 {
     public GameObject player;
-    public GameObject campTutorial;
     public CharacterController characterController;
+    public GameObject ObstacleTutorial;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -18,9 +18,9 @@ public class CampTutorial : MonoBehaviour
 
     private IEnumerator Tutorial()
     {
-        
+
         yield return new WaitForSeconds(1f);
-        campTutorial.SetActive(true);
+        ObstacleTutorial.SetActive(true);
         characterController.enabled = false;
         //Time.timeScale = 0f;
         //take away player input 
@@ -29,9 +29,9 @@ public class CampTutorial : MonoBehaviour
         yield return new WaitForSeconds(5);
         //Time.timeScale = 1f;
         //give player input back
-        characterController.enabled = true;
-        Destroy(campTutorial);
+        characterController.enabled = true; 
+        Destroy(ObstacleTutorial);
         Destroy(this.gameObject);
-        
+
     }
 }
